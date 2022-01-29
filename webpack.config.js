@@ -40,14 +40,13 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
         exclude: /\.module\.css$/
       }
     ]
   },
-  devServer: {
-    contentBase: './dist'
-  },
+  mode: IS_PROD ? 'production' : 'development',
+  stats: IS_PROD ? 'normal' : 'minimal',
   plugins: [
     new ProvidePlugin({
       process: 'process/browser',

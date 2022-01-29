@@ -24,18 +24,25 @@ export default (searchText: string = ''): SearchParserResult => {
   let text = searchText
   for (const match of matches) {
     const key = match?.[1]
-    const value = match?.[2]
+    let value: string = match?.[2]
 
     if (!value || !key) {
       continue
     }
+    for (const q of ['"', "'"]) {
+      // trim quotation marks (regex doesn't capture it in a group)
+      if (value.startsWith(q) && value.endsWith(q)) {
+        value = value.slice(1, value.length - 1)
+        console.log(value)
+      }
+    }
     if (stringContainsKeys.includes(key)) {
-      flags.stringContains[key] = value as string
+      flags.stringContains[key] = value
     }
     text = text.replace(match[0], '')
   }
   return {
-    searchText: text || ' ',
+    searchText: text.trim() || ' ',
     flags
   }
 }

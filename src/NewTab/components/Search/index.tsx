@@ -72,7 +72,7 @@ const Search = (): ReactElement => {
   return (
     <div
       tabIndex={0}
-      className='flex flex-col text-3xl'
+      className='flex flex-col text-3xl full'
       onFocus={() => {
         inputRef?.current?.focus()
       }}
@@ -110,7 +110,7 @@ const Search = (): ReactElement => {
         }}
       />
       {!!results.length && (
-        <div className='flex flex-col flex-grow border text-gray-400 gap-1'>
+        <div className='flex flex-col flex-grow border text-gray-400 gap-1 overflow-y-auto'>
           {results.map((result, index) => {
             const isSelected = selectedIndex === index
             const searchEntry = result.item

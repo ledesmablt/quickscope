@@ -7,7 +7,7 @@ interface Props {
 const SearchItem = ({ searchEntry }: Props): ReactElement => {
   return (
     <a href={searchEntry.url}>
-      <div className='inline-block w-full flex justify-between items-end max-w-full'>
+      <div className='inline-block w-full flex justify-between items-end'>
         <span className='truncate flex-grow'>
           {searchEntry.title || searchEntry.url}
         </span>

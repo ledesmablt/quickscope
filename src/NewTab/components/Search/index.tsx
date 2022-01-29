@@ -8,6 +8,7 @@ import React, {
 } from 'react'
 import { buildSearchList, filterSearchList } from 'src/utils/list'
 import searchParser from 'src/utils/searchParser'
+import useDebounce from 'src/utils/useDebounce'
 import useStateCached from 'src/utils/useStateCached'
 import SearchItem from '../SearchItem'
 
@@ -29,9 +30,14 @@ const Search = (): ReactElement => {
   const [searchText, setSearchText] = useStateCached('searchText', '')
   const [selectedIndex, setSelectedIndex] = useState(0)
 
-  const searchInput = useMemo(() => searchParser(searchText), [searchText])
+  const debouncedSearchText = useDebounce(searchText)
+  const searchInput = useMemo(
+    () => searchParser(debouncedSearchText),
+    [debouncedSearchText]
+  )
 
   const fzf = useMemo(() => {
+    console.log('triggering')
     // TODO: optimize
     const list = filterSearchList(buildSearchList(), searchInput.flags)
     return new Fzf(list, {

@@ -21,7 +21,7 @@ export const TEST_LIST = [
 export const buildSearchList = (): SearchEntry[] => {
   // todo: build from different sources
   return TEST_LIST.map((v) => ({
-    url: v,
+    url: 'https://' + v + '.com',
     title: v
   }))
 }

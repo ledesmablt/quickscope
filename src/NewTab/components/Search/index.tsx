@@ -72,7 +72,7 @@ const Search = (): ReactElement => {
   return (
     <div
       tabIndex={0}
-      className='flex flex-col text-3xl'
+      className='flex flex-col text-3xl p-8'
       onFocus={() => {
         inputRef?.current?.focus()
       }}
@@ -109,25 +109,27 @@ const Search = (): ReactElement => {
           setSearchText(e.target.value)
         }}
       />
-      <div className='flex flex-col flex-grow border text-gray-400 gap-1'>
-        {results.map((result, index) => {
-          const isSelected = selectedIndex === index
-          const searchEntry = result.item
-          return (
-            <div
-              key={index}
-              className={`cursor-pointer px-2 py-1 ${
-                isSelected ? 'Search_selected' : ''
-              }`}
-              onMouseEnter={() => {
-                setSelectedIndex(index)
-              }}
-            >
-              <SearchItem searchEntry={searchEntry} />
-            </div>
-          )
-        })}
-      </div>
+      {!!results.length && (
+        <div className='flex flex-col flex-grow border text-gray-400 gap-1'>
+          {results.map((result, index) => {
+            const isSelected = selectedIndex === index
+            const searchEntry = result.item
+            return (
+              <div
+                key={index}
+                className={`cursor-pointer px-2 py-1 ${
+                  isSelected ? 'Search_selected' : ''
+                }`}
+                onMouseEnter={() => {
+                  setSelectedIndex(index)
+                }}
+              >
+                <SearchItem searchEntry={searchEntry} />
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

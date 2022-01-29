@@ -1,9 +1,9 @@
-import React, { ReactElement } from "react";
-import ReactDOM from "@hot-loader/react-dom";
+import React, { ReactElement } from 'react'
+import ReactDOM from '@hot-loader/react-dom'
 
 const NewTab = (): ReactElement => {
-  return <div>hello world</div>;
-};
+  return <div>hello world</div>
+}
 
-const mountNode = document.getElementById("newTab");
-ReactDOM.render(<NewTab />, mountNode);
+const mountNode = document.getElementById('newTab')
+ReactDOM.render(<NewTab />, mountNode)

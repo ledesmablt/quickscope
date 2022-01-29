@@ -2,10 +2,7 @@
   "name": "Quickscope",
   "description": "WIP",
   "manifest_version": 3,
-  "permissions": [
-    "activeTab",
-    "storage"
-  ],
+  "permissions": ["activeTab", "storage"],
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
@@ -23,12 +20,8 @@
   },
   "web_accessible_resources": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "resources": [
-        "popup.html"
-      ]
+      "matches": ["<all_urls>"],
+      "resources": ["popup.html"]
     }
   ]
 }

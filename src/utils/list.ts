@@ -25,3 +25,32 @@ export const buildSearchList = (): SearchEntry[] => {
     title: v
   }))
 }
+
+export interface FilterFlags {
+  stringContains?: {
+    url?: string
+    title?: string
+    description?: string
+  }
+}
+export const filterSearchList = (
+  list: SearchEntry[],
+  filterFlags?: FilterFlags
+): SearchEntry[] => {
+  let searchList = list
+  if (Object.keys(filterFlags?.stringContains || {}).length) {
+    searchList = searchList.filter((searchEntry) => {
+      // searchEntry url must contain stringContains.url, and so on
+      return Object.entries(filterFlags.stringContains).every(
+        ([key, value]) => {
+          const entryValue: string = searchEntry[key]
+          if (!entryValue) {
+            return false
+          }
+          return entryValue.toLowerCase().search(value) >= 0
+        }
+      )
+    })
+  }
+  return searchList
+}

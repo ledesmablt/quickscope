@@ -12,8 +12,14 @@
     "resolveJsonModule": true,
     "strict": true,
     "strictNullChecks": false,
+    "downlevelIteration": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -6,7 +6,8 @@ import React, {
   useRef,
   useState
 } from 'react'
-import { buildSearchList } from 'src/utils/list'
+import { buildSearchList, filterSearchList } from 'src/utils/list'
+import searchParser from 'src/utils/searchParser'
 import useStateCached from 'src/utils/useStateCached'
 import SearchItem from '../SearchItem'
 
@@ -28,17 +29,20 @@ const Search = (): ReactElement => {
   const [searchText, setSearchText] = useStateCached('searchText', '')
   const [selectedIndex, setSelectedIndex] = useState(0)
 
+  const searchInput = useMemo(() => searchParser(searchText), [searchText])
+
   const fzf = useMemo(() => {
-    const list = buildSearchList()
+    // TODO: optimize
+    const list = filterSearchList(buildSearchList(), searchInput.flags)
     return new Fzf(list, {
       selector: (v) => {
-        return v.url + v.title
+        return v.title + v.url || '' + v.description || ''
       },
       match: extendedMatch
     })
-  }, [])
+  }, [searchInput.flags?.stringContains])
 
-  const results = searchText ? fzf.find(searchText) : []
+  const results = searchText ? fzf.find(searchInput.searchText) : []
   const selectedResult = results[selectedIndex]?.item
 
   useEffect(() => {

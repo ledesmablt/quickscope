@@ -4,6 +4,7 @@ import _ from 'lodash'
 import validateSearchEntry from 'src/utils/validateSearchEntry'
 import { SearchEntry } from 'src/types'
 import storage from 'src/utils/storage'
+import { ValidationError } from 'yup'
 
 const placeholderText = `# example
 
@@ -18,8 +19,11 @@ interface YamlParseResult {
   data?: SearchEntry[]
   error?: {
     message?: string
-    line?: number
-    col?: number
+    entryNum?: number
+    coordinates?: {
+      line: number
+      col: number
+    }
   }
 }
 
@@ -44,39 +48,48 @@ const Settings = (): ReactElement => {
       return {}
     }
     let doc: any
+    let data: any[]
+    let errors: string[] = []
+    let errorEntryNum: number
     try {
       doc = yaml.load(myListText)
+      data = doc.map((v, index) => {
+        try {
+          return validateSearchEntry(v)
+        } catch (err) {
+          errorEntryNum = index
+          throw err
+        }
+      })
     } catch (err) {
       if (err instanceof yaml.YAMLException) {
-        console.log(err)
         return {
           error: {
-            message: err.reason,
-            line: err.mark.line,
-            col: err.mark.column
+            message: `(line ${err.mark.line}, col ${err.mark.column}) ${err.reason}`,
+            coordinates: {
+              line: err.mark.line,
+              col: err.mark.column
+            }
           }
         }
-      }
-      return {
-        error: { message: err?.toString() }
+      } else if (err instanceof ValidationError) {
+        return {
+          error: {
+            message: `(entry #${errorEntryNum}) ${err.message}`,
+            entryNum: errorEntryNum
+          }
+        }
+      } else {
+        return {
+          error: { message: err?.toString() }
+        }
       }
     }
     if (!_.isArray(doc)) {
       return {
-        error: { message: 'Format should be a bullet list' }
+        error: { message: 'syntax error: format should be a bullet list' }
       }
     }
-    const errors: string[] = []
-    const data = doc
-      .map((d) => {
-        try {
-          return validateSearchEntry(d)
-        } catch (err) {
-          errors.push(err?.toString())
-          return null
-        }
-      })
-      .filter(Boolean)
     return {
       data,
       error: { message: errors.join(', ') }
@@ -104,14 +117,7 @@ const Settings = (): ReactElement => {
         rows={10}
         className='mt-1 p-1 border rounded w-full font-mono'
       />
-      {!!error?.message && (
-        <p className='text-red-600'>
-          {typeof error.line === 'number'
-            ? `(line ${error.line}, col ${error.col}) `
-            : ''}
-          {error.message}
-        </p>
-      )}
+      {!!error?.message && <p className='text-red-600'>{error.message}</p>}
       <div className='mt-2 flex items-center gap-2'>
         <button
           className='p-1 w-16 border rounded'

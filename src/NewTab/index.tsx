@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react'
 import ReactDOM from '@hot-loader/react-dom'
 
 import '../styles.css'
-import Search from './Search'
+import Search from './components/Search'
 
 const NewTab = (): ReactElement => {
   return (

@@ -1,7 +1,7 @@
 import { extendedMatch, Fzf } from 'fzf'
 import React, { ReactElement, useEffect, useMemo, useState } from 'react'
 import { buildSearchList } from 'src/utils/list'
-import useStateCached from '../utils/useStateCached'
+import useStateCached from 'src/utils/useStateCached'
 
 import './Search.css'
 
@@ -82,7 +82,7 @@ const Search = (): ReactElement => {
           return (
             <div
               key={index}
-              className={`cursor-pointer ${
+              className={`cursor-pointer px-2 py-1 ${
                 isSelected ? 'Search_selected' : ''
               }`}
               onMouseEnter={() => {
@@ -90,7 +90,7 @@ const Search = (): ReactElement => {
               }}
             >
               <a href={searchEntry.url}>
-                <div className='inline-block w-full px-2'>
+                <div className='inline-block w-full'>
                   {result.item.title || result.item.url}
                 </div>
               </a>

@@ -1,8 +1,11 @@
 // in case supporting different browsers, can use this as an "API"
 
+import { SearchEntry } from 'src/types'
+
 export interface LocalStorage {
   searchText?: string
   asyncSearchList?: string[]
+  myList?: SearchEntry[]
 }
 
 export default {

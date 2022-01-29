@@ -9,7 +9,7 @@ import Nav from './components/Nav'
 
 const NewTab = (): ReactElement => {
   return (
-    <MemoryRouter>
+    <MemoryRouter initialEntries={['/settings']}>
       <div className='w-screen h-screen px-8 py-4 flex flex-col justify-center items-center'>
         <Nav />
         <div className='w-1/2 min-w-[24rem] max-w-[40rem] h-full min-h-[30rem] flex flex-col items-center pt-20'>

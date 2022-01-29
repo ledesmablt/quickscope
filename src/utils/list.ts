@@ -1,5 +1,6 @@
 import { SearchEntry } from 'src/types'
 import { formatBookmark, searchBookmarks } from './bookmarks'
+import storage from './storage'
 
 export const TEST_LIST = [
   'go',
@@ -30,8 +31,11 @@ export const buildSearchList = (): SearchEntry[] => {
 export const buildAsyncSearchList = async (
   searchText?: string
 ): Promise<SearchEntry[]> => {
-  const bookmarks = await searchBookmarks(searchText || '')
-  return bookmarks.filter((b) => b.url).map(formatBookmark)
+  const mySearchList: SearchEntry[] = await storage.get('myList')
+  const bookmarks = (await searchBookmarks(searchText || ''))
+    .filter((b) => b.url)
+    .map(formatBookmark)
+  return [...mySearchList, ...bookmarks]
 }
 
 export interface FilterFlags {
@@ -46,10 +50,10 @@ export interface FilterFlags {
 }
 export const filterSearchList = (
   list: SearchEntry[],
-  filterFlags?: FilterFlags
+  filterFlags: FilterFlags
 ): SearchEntry[] => {
   let searchList = list
-  if (Object.keys(filterFlags?.stringContains).length) {
+  if (Object.keys(filterFlags.stringContains).length) {
     searchList = searchList.filter((searchEntry) => {
       // searchEntry url must contain stringContains.url, and so on
       return Object.entries(filterFlags.stringContains).every(
@@ -63,18 +67,16 @@ export const filterSearchList = (
       )
     })
   }
-  if (Object.keys(filterFlags?.stringEquals).length) {
+  if (Object.keys(filterFlags.stringEquals).length) {
     searchList = searchList.filter((searchEntry) => {
       // searchEntry url must contain stringContains.url, and so on
-      return Object.entries(filterFlags.stringContains).every(
-        ([key, value]) => {
-          const entryValue: string = searchEntry[key]
-          if (!entryValue) {
-            return false
-          }
-          return entryValue.toLowerCase() === value.toLowerCase()
+      return Object.entries(filterFlags.stringEquals).every(([key, value]) => {
+        const entryValue: string = searchEntry[key]
+        if (!entryValue) {
+          return false
         }
-      )
+        return entryValue.toLowerCase() === value.toLowerCase()
+      })
     })
   }
   return searchList

@@ -52,7 +52,11 @@ const Search = (): ReactElement => {
       },
       match: extendedMatch
     })
-  }, [numAsyncTriggers, searchInput.flags?.stringContains])
+  }, [
+    numAsyncTriggers,
+    searchInput.flags.stringContains,
+    searchInput.flags.stringEquals
+  ])
 
   const results = searchText ? fzf.find(searchInput.searchText) : []
   const selectedResult = results[selectedIndex]?.item

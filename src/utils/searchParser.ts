@@ -15,11 +15,13 @@ const stringContainsKeys: (keyof FilterFlags['stringContains'])[] = [
   'title',
   'description'
 ]
+const stringEqualsKeys: (keyof FilterFlags['stringEquals'])[] = ['label']
 
 export default (searchText: string = ''): SearchParserResult => {
   const matches = searchText.matchAll(regex) || []
   const flags: FilterFlags = {
-    stringContains: {}
+    stringContains: {},
+    stringEquals: {}
   }
   let text = searchText
   for (const match of matches) {
@@ -33,11 +35,12 @@ export default (searchText: string = ''): SearchParserResult => {
       // trim quotation marks (regex doesn't capture it in a group)
       if (value.startsWith(q) && value.endsWith(q)) {
         value = value.slice(1, value.length - 1)
-        console.log(value)
       }
     }
     if (stringContainsKeys.includes(key)) {
       flags.stringContains[key] = value
+    } else if (stringEqualsKeys.includes(key)) {
+      flags.stringEquals[key] = value
     }
     text = text.replace(match[0], '')
   }

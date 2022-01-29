@@ -8,6 +8,7 @@ import React, {
 } from 'react'
 import { buildSearchList, filterSearchList } from 'src/utils/list'
 import searchParser from 'src/utils/searchParser'
+import useAsyncSearchList from 'src/utils/useAsyncSearchList'
 import useDebounce from 'src/utils/useDebounce'
 import useStateCached from 'src/utils/useStateCached'
 import SearchItem from '../SearchItem'
@@ -36,17 +37,22 @@ const Search = (): ReactElement => {
     [debouncedSearchText]
   )
 
+  const { searchList: asyncSearchList, numTriggers: numAsyncTriggers } =
+    useAsyncSearchList(debouncedSearchText)
   const fzf = useMemo(() => {
-    console.log('triggering')
     // TODO: optimize
-    const list = filterSearchList(buildSearchList(), searchInput.flags)
+    const syncSearchList = buildSearchList()
+    const list = filterSearchList(
+      [...syncSearchList, ...asyncSearchList],
+      searchInput.flags
+    )
     return new Fzf(list, {
       selector: (v) => {
         return v.title + v.url || '' + v.description || ''
       },
       match: extendedMatch
     })
-  }, [searchInput.flags?.stringContains])
+  }, [numAsyncTriggers, searchInput.flags?.stringContains])
 
   const results = searchText ? fzf.find(searchInput.searchText) : []
   const selectedResult = results[selectedIndex]?.item

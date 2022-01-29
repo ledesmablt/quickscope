@@ -12,6 +12,7 @@ module.exports = {
   devtool: "inline-source-map",
   entry: {
     popup: "./src/Popup/index.tsx",
+    newTab: "./src/NewTab/index.tsx",
     backgroundScript: "./src/backgroundScript.ts",
   },
   output: {

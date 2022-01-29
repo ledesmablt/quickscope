@@ -6,6 +6,9 @@
     "activeTab",
     "storage"
   ],
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
   "background": {
     "service_worker": "backgroundScript.js"
   },

@@ -13,8 +13,6 @@ import useDebounce from 'src/utils/useDebounce'
 import useStateCached from 'src/utils/useStateCached'
 import SearchItem from '../SearchItem'
 
-import './Search.css'
-
 interface OnLaunchOptions {
   newTab?: boolean
 }
@@ -122,7 +120,7 @@ const Search = (): ReactElement => {
               <div
                 key={index}
                 className={`cursor-pointer px-2 py-1 ${
-                  isSelected ? 'Search_selected' : ''
+                  isSelected ? 'bg-gray-100 text-gray-600' : ''
                 }`}
                 onMouseEnter={() => {
                   setSelectedIndex(index)

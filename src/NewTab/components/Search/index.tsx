@@ -1,7 +1,14 @@
 import { extendedMatch, Fzf } from 'fzf'
-import React, { ReactElement, useEffect, useMemo, useState } from 'react'
+import React, {
+  ReactElement,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import { buildSearchList } from 'src/utils/list'
 import useStateCached from 'src/utils/useStateCached'
+import SearchItem from '../SearchItem'
 
 import './Search.css'
 
@@ -10,14 +17,14 @@ interface OnLaunchOptions {
 }
 const onLaunch = (url: string, options?: OnLaunchOptions) => {
   if (options?.newTab) {
-    const win = window.open(url, '_blank')
-    win.focus()
+    window.open(url, '_blank')
   } else {
     window.open(url, '_self')
   }
 }
 
 const Search = (): ReactElement => {
+  const inputRef = useRef<HTMLInputElement>()
   const [searchText, setSearchText] = useStateCached('searchText', '')
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -48,7 +55,11 @@ const Search = (): ReactElement => {
 
   return (
     <div
-      className='flex flex-col h-3/4 min-h-[20rem] max-h-[40rem] w-1/2 min-w-[24rem] max-w-[40rem] text-3xl'
+      tabIndex={0}
+      className='flex flex-col text-3xl'
+      onFocus={() => {
+        inputRef?.current?.focus()
+      }}
       onKeyDown={(e) => {
         if (e.key === 'ArrowDown') {
           e.preventDefault()
@@ -62,10 +73,17 @@ const Search = (): ReactElement => {
             return
           }
           onLaunch(selectedResult.url, { newTab: e.ctrlKey || e.metaKey })
+        } else if (e.key === '/') {
+          if (document.activeElement !== inputRef?.current) {
+            // focus input
+            e.preventDefault()
+            inputRef?.current?.focus()
+          }
         }
       }}
     >
       <input
+        ref={inputRef}
         autoFocus
         type='text'
         className='border rounded-t p-2 w-md'
@@ -75,7 +93,7 @@ const Search = (): ReactElement => {
           setSearchText(e.target.value)
         }}
       />
-      <div className='flex flex-col flex-grow border text-gray-400 py-1 gap-1'>
+      <div className='flex flex-col flex-grow border text-gray-400 gap-1'>
         {results.map((result, index) => {
           const isSelected = selectedIndex === index
           const searchEntry = result.item
@@ -89,11 +107,7 @@ const Search = (): ReactElement => {
                 setSelectedIndex(index)
               }}
             >
-              <a href={searchEntry.url}>
-                <div className='inline-block w-full'>
-                  {result.item.title || result.item.url}
-                </div>
-              </a>
+              <SearchItem searchEntry={searchEntry} />
             </div>
           )
         })}

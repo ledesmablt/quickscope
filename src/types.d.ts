@@ -1,6 +1,9 @@
-export interface PageDetails {
+export interface SearchEntry {
   url: string
-  title: string
-  image?: string
-  site_name?: string
+  title?: string
+  description?: string
+  icon?: string
+  label?: string
+  tags?: string[]
+  priority?: number
 }

@@ -72,7 +72,7 @@ const Search = (): ReactElement => {
   return (
     <div
       tabIndex={0}
-      className='flex flex-col text-3xl p-8'
+      className='flex flex-col text-3xl'
       onFocus={() => {
         inputRef?.current?.focus()
       }}

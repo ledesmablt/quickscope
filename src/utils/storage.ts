@@ -2,6 +2,7 @@
 
 export interface LocalStorage {
   searchText?: string
+  asyncSearchList?: string[]
 }
 
 export default {

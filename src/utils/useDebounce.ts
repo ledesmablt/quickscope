@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export default <T>(value: T, delay: number = 200): T => {
+export default <T>(value: T, delay: number = 150): T => {
   const [debouncedValue, setDebouncedValue] = useState(value)
   useEffect(() => {
     const handler = setTimeout(() => {

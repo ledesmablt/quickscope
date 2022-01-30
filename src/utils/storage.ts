@@ -6,13 +6,14 @@ export interface LocalStorage {
   searchText?: string
   asyncSearchList?: string[]
   myList?: SearchEntry[]
+  'options.filter.excludeList'?: Record<string, boolean>
 }
 
 export default {
   set: async (body: Partial<LocalStorage>): Promise<void> => {
     await chrome.storage.local.set(body)
   },
-  get: async <T>(key: keyof LocalStorage): Promise<T> => {
+  get: async <T = any>(key: keyof LocalStorage): Promise<T> => {
     const result = await chrome.storage.local.get(key)
     return result?.[key]
   },

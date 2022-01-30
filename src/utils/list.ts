@@ -1,14 +1,19 @@
 import { SearchEntry } from 'src/types'
-import { formatBookmark, getBookmarks } from './bookmarks'
+import { getBookmarks } from './bookmarks'
 import storage from './storage'
+
+const getMyList = async (): Promise<SearchEntry[]> => {
+  const excluded = (await storage.get('options.filter.excludeList'))?.myList
+  if (excluded) {
+    return []
+  }
+  return (await storage.get('myList')) || []
+}
 
 // builds only on page load
 export const buildStaticList = async () => {
-  const mySearchList: SearchEntry[] = await storage.get('myList')
-  const bookmarks = (await getBookmarks())
-    .filter((b) => b.url)
-    .map(formatBookmark)
-  return [...mySearchList, ...bookmarks]
+  const [myList, bookmarks] = await Promise.all([getMyList(), getBookmarks()])
+  return [...myList, ...bookmarks]
 }
 
 // searchable - useful for API calls expecting frequently changing output

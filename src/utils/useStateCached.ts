@@ -19,8 +19,10 @@ export default <T>(
   }, [])
 
   useEffect(() => {
-    // update cache on value change
-    storage.set({ [cacheKey as string]: value })
+    if (typeof value !== 'undefined') {
+      // update cache on value change
+      storage.set({ [cacheKey as string]: value })
+    }
   }, [value])
 
   return [value, setValue]

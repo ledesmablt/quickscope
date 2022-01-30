@@ -1,6 +1,11 @@
 import { SearchEntry } from 'src/types'
+import storage from './storage'
 
 export const getBookmarks = async () => {
+  const excluded = (await storage.get('options.filter.excludeList'))?.bookmarks
+  if (excluded) {
+    return []
+  }
   const tree = await chrome.bookmarks.getTree()
   const recurseTree = (
     tree: chrome.bookmarks.BookmarkTreeNode
@@ -11,7 +16,8 @@ export const getBookmarks = async () => {
     return [tree]
   }
   const flatTree = tree.flatMap(recurseTree)
-  return flatTree
+
+  return flatTree.filter((b) => b?.url).map(formatBookmark)
 }
 
 export const formatBookmark = (

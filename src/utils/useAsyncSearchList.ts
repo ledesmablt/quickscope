@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { SearchEntry } from 'src/types'
 import { buildSearchableList, buildStaticList } from './list'
+import { LocalStorage } from './storage'
 
 interface AsyncSearchListResult {
   searchList: SearchEntry[]
@@ -21,6 +22,25 @@ export default (searchText: string = ''): AsyncSearchListResult => {
   const [searchableList, setSearchableList] = useState<SearchEntry[]>([])
 
   const [numTriggers, setNumTriggers] = useState(0)
+  const [numReloads, setNumReloads] = useState(0)
+
+  useEffect(() => {
+    // attach listeners
+    const storageListener = (changes: LocalStorage) => {
+      // reload on change
+      const updateKeys: (keyof LocalStorage)[] = ['options.filter.excludeList']
+      for (const key of updateKeys) {
+        if (changes[key]) {
+          setNumReloads((n) => n + 1)
+          break
+        }
+      }
+    }
+    chrome.storage.onChanged.addListener(storageListener)
+    return () => {
+      chrome.storage.onChanged.removeListener(storageListener)
+    }
+  }, [])
 
   useEffect(() => {
     // load static
@@ -30,7 +50,7 @@ export default (searchText: string = ''): AsyncSearchListResult => {
       setNumStaticTriggers((n) => n + 1)
     }
     effect()
-  }, [])
+  }, [numReloads])
 
   useEffect(() => {
     // load searchable list
@@ -44,7 +64,7 @@ export default (searchText: string = ''): AsyncSearchListResult => {
       setSearchableLoading(false)
     }
     effect()
-  }, [searchText])
+  }, [searchText, numReloads])
 
   useEffect(() => {
     if (staticLoading && searchableLoading) {
@@ -52,6 +72,7 @@ export default (searchText: string = ''): AsyncSearchListResult => {
     }
     const combinedList = [...staticList, ...searchableList]
     if (combinedList.length) {
+      logger.log('rebuilding list')
       setSearchList(combinedList)
       setNumTriggers((n) => n + 1)
     }

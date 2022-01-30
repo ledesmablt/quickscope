@@ -10,7 +10,6 @@ import { filterSearchList } from 'src/utils/list'
 import searchParser from 'src/utils/searchParser'
 import useAsyncSearchList from 'src/utils/useAsyncSearchList'
 import useDebounce from 'src/utils/useDebounce'
-import useStateCached from 'src/utils/useStateCached'
 import SearchItem from '../SearchItem'
 
 interface OnLaunchOptions {
@@ -31,7 +30,7 @@ const Search = (): ReactElement => {
   const inputRef = useRef<HTMLInputElement>(null)
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   const selectedRef = useRef<HTMLDivElement>(null)
-  const [searchText, setSearchText] = useStateCached('searchText', '')
+  const [searchText, setSearchText] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [disableMouseEvent, setDisableMouseSelect] = useState(false)
 

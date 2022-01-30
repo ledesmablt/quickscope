@@ -157,7 +157,6 @@ const Search = (): ReactElement => {
     >
       <input
         ref={inputRef}
-        autoFocus
         type='text'
         className='border rounded-t p-2 w-md'
         placeholder='Search'

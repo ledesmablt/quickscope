@@ -37,6 +37,7 @@ const Search = (): ReactElement => {
 
   const { searchList: asyncSearchList, numTriggers: numAsyncTriggers } =
     useAsyncSearchList(debouncedSearchText)
+
   const fzf = useMemo(() => {
     // TODO: optimize
     const syncSearchList = buildSearchList()
@@ -71,6 +72,28 @@ const Search = (): ReactElement => {
     }
   }, [results.length, selectedIndex])
 
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setSelectedIndex(Math.min(selectedIndex + 1, results.length - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setSelectedIndex((i) => Math.max(i - 1, 0))
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      if (!selectedResult) {
+        return
+      }
+      onLaunch(selectedResult.url, { newTab: e.ctrlKey || e.metaKey })
+    } else if (e.key === '/') {
+      if (document.activeElement !== inputRef?.current) {
+        // focus input
+        e.preventDefault()
+        inputRef?.current?.focus()
+      }
+    }
+  }
+
   return (
     <div
       tabIndex={0}
@@ -78,27 +101,7 @@ const Search = (): ReactElement => {
       onFocus={() => {
         inputRef?.current?.focus()
       }}
-      onKeyDown={(e) => {
-        if (e.key === 'ArrowDown') {
-          e.preventDefault()
-          setSelectedIndex(Math.min(selectedIndex + 1, results.length - 1))
-        } else if (e.key === 'ArrowUp') {
-          e.preventDefault()
-          setSelectedIndex((i) => Math.max(i - 1, 0))
-        } else if (e.key === 'Enter') {
-          e.preventDefault()
-          if (!selectedResult) {
-            return
-          }
-          onLaunch(selectedResult.url, { newTab: e.ctrlKey || e.metaKey })
-        } else if (e.key === '/') {
-          if (document.activeElement !== inputRef?.current) {
-            // focus input
-            e.preventDefault()
-            inputRef?.current?.focus()
-          }
-        }
-      }}
+      onKeyDown={onKeyDown}
     >
       <input
         ref={inputRef}
@@ -124,6 +127,7 @@ const Search = (): ReactElement => {
                 }`}
                 onMouseEnter={() => {
                   setSelectedIndex(index)
+                  inputRef?.current?.focus()
                 }}
               >
                 <SearchItem searchEntry={searchEntry} />

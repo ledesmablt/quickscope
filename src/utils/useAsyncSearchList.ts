@@ -31,6 +31,7 @@ export default (searchText: string = ''): AsyncSearchListResult => {
       const updateKeys: (keyof LocalStorage)[] = ['options.filter.excludeList']
       for (const key of updateKeys) {
         if (changes[key]) {
+          logger.log(`reloading - ${key} changed`)
           setNumReloads((n) => n + 1)
           break
         }
@@ -45,6 +46,7 @@ export default (searchText: string = ''): AsyncSearchListResult => {
   useEffect(() => {
     // load static
     const effect = async () => {
+      logger.log('rebuilding static list')
       setStaticList(await buildStaticList())
       setStaticLoading(false)
       setNumStaticTriggers((n) => n + 1)
@@ -55,6 +57,7 @@ export default (searchText: string = ''): AsyncSearchListResult => {
   useEffect(() => {
     // load searchable list
     const effect = async () => {
+      logger.log('rebuilding searchable list')
       setSearchableLoading(true)
       const newSearchList = await buildSearchableList(searchText)
       if (newSearchList?.length) {
@@ -72,9 +75,9 @@ export default (searchText: string = ''): AsyncSearchListResult => {
     }
     const combinedList = [...staticList, ...searchableList]
     if (combinedList.length) {
-      logger.log('rebuilding list')
       setSearchList(combinedList)
       setNumTriggers((n) => n + 1)
+      logger.log('list rebuilt')
     }
   }, [numStaticTriggers, numSearchableTriggers])
 

@@ -25,7 +25,10 @@ const onLaunch = (url: string, options?: OnLaunchOptions) => {
 }
 
 const Search = (): ReactElement => {
-  const inputRef = useRef<HTMLInputElement>()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const resultsContainerRef = useRef<HTMLDivElement>(null)
+  const selectedRef = useRef<HTMLDivElement>(null)
   const [searchText, setSearchText] = useStateCached('searchText', '')
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -57,7 +60,9 @@ const Search = (): ReactElement => {
     searchInput.flags.stringEquals
   ])
 
-  const results = searchText ? fzf.find(searchInput.searchText) : []
+  const results = useMemo(() => {
+    return searchText ? fzf.find(searchInput.searchText) : []
+  }, [searchText, fzf])
   const selectedResult = results[selectedIndex]?.item
 
   useEffect(() => {
@@ -71,22 +76,6 @@ const Search = (): ReactElement => {
       setSelectedIndex(0)
     }
   }, [results.length, selectedIndex])
-
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setSelectedIndex(Math.min(selectedIndex + 1, results.length - 1))
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setSelectedIndex((i) => Math.max(i - 1, 0))
-    } else if (e.key === 'Enter') {
-      e.preventDefault()
-      if (!selectedResult) {
-        return
-      }
-      onLaunch(selectedResult.url, { newTab: e.ctrlKey || e.metaKey })
-    }
-  }
 
   useEffect(() => {
     // global event listeners
@@ -105,8 +94,56 @@ const Search = (): ReactElement => {
     }
   }, [])
 
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      if (!selectedRef.current.nextElementSibling) {
+        return
+      }
+
+      // increment
+      setSelectedIndex(Math.min(selectedIndex + 1, results.length - 1))
+
+      // check for out of bounds
+      const selectedBottom =
+        selectedRef.current.getBoundingClientRect().bottom +
+        selectedRef.current.offsetHeight +
+        2
+      const containerBottom =
+        containerRef.current.getBoundingClientRect().bottom
+      if (selectedBottom > containerBottom) {
+        selectedRef.current.nextElementSibling?.scrollIntoView(false)
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (!selectedRef.current.previousElementSibling) {
+        return
+      }
+
+      // decrement
+      setSelectedIndex((i) => Math.max(i - 1, 0))
+
+      // check for out of bounds
+      const aboveTop =
+        selectedRef.current.previousElementSibling.getBoundingClientRect().top +
+        2
+      const containerTop =
+        resultsContainerRef.current.getBoundingClientRect().top
+      if (aboveTop < containerTop) {
+        selectedRef.current.previousElementSibling.scrollIntoView(true)
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      if (!selectedResult) {
+        return
+      }
+      onLaunch(selectedResult.url, { newTab: e.ctrlKey || e.metaKey })
+    }
+  }
+
   return (
     <div
+      ref={containerRef}
       tabIndex={0}
       className='flex flex-col text-3xl grow max-h-[95%]'
       onFocus={() => {
@@ -126,12 +163,16 @@ const Search = (): ReactElement => {
         }}
       />
       {!!results.length && (
-        <div className='flex flex-col grow border text-gray-400 gap-1 overflow-y-auto'>
+        <div
+          ref={resultsContainerRef}
+          className='flex flex-col grow border text-gray-400 gap-1 overflow-y-auto'
+        >
           {results.map((result, index) => {
             const isSelected = selectedIndex === index
             const searchEntry = result.item
             return (
               <div
+                ref={index === selectedIndex ? selectedRef : null}
                 key={index}
                 className={`cursor-pointer px-2 py-1 ${
                   isSelected ? 'bg-gray-100 text-gray-600' : ''

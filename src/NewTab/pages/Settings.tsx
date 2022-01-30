@@ -3,6 +3,7 @@ import yaml from 'js-yaml'
 import _ from 'lodash'
 import storage from 'src/utils/storage'
 import YamlEditor from '../components/YamlEditor'
+import FilterOptions from '../components/FilterOptions'
 
 const Settings = (): ReactElement => {
   // TODO: save multiple lists
@@ -18,7 +19,13 @@ const Settings = (): ReactElement => {
     <div className='full'>
       <p>settings</p>
       <div className='p-2' />
-      <p>my list</p>
+
+      <FilterOptions />
+      <div className='p-4' />
+
+      <p>
+        <b>my list</b>
+      </p>
       <YamlEditor
         value={myListText}
         onChange={setMyListText}

@@ -31,6 +31,7 @@ const Search = (): ReactElement => {
   const selectedRef = useRef<HTMLDivElement>(null)
   const [searchText, setSearchText] = useStateCached('searchText', '')
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [disableMouseEvent, setDisableMouseSelect] = useState(false)
 
   const debouncedSearchText = useDebounce(searchText)
   const searchInput = useMemo(
@@ -95,6 +96,7 @@ const Search = (): ReactElement => {
   }, [])
 
   const onKeyDown = (e: React.KeyboardEvent) => {
+    setDisableMouseSelect(true)
     if (e.key === 'ArrowDown') {
       e.preventDefault()
       if (!selectedRef.current.nextElementSibling) {
@@ -166,6 +168,9 @@ const Search = (): ReactElement => {
         <div
           ref={resultsContainerRef}
           className='flex flex-col grow border text-gray-400 gap-1 overflow-y-auto'
+          onMouseMove={() => {
+            setDisableMouseSelect(false)
+          }}
         >
           {results.map((result, index) => {
             const isSelected = selectedIndex === index
@@ -178,6 +183,9 @@ const Search = (): ReactElement => {
                   isSelected ? 'bg-gray-100 text-gray-600' : ''
                 }`}
                 onMouseEnter={() => {
+                  if (disableMouseEvent) {
+                    return
+                  }
                   setSelectedIndex(index)
                   inputRef?.current?.focus()
                 }}

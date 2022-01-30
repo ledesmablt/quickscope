@@ -110,6 +110,7 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
         id={`form-${id}-name`}
         className='border rouded p-1'
         type='text'
+        spellCheck={false}
         value={formValues.name}
         onChange={(e) => {
           setFormValues({
@@ -127,6 +128,7 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
         id={`form-${id}-label`}
         className='border rounded p-1'
         type='text'
+        spellCheck={false}
         value={formValues.label}
         onChange={(e) => {
           setFormValues({
@@ -143,6 +145,7 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
         id={`form-${id}-pathToData`}
         className='border rounded p-1'
         type='text'
+        spellCheck={false}
         value={formValues.pathToData}
         onChange={(e) => {
           setFormValues({
@@ -159,6 +162,7 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
         id={`form-${id}-requestConfig`}
         rows={10}
         className='code'
+        spellCheck={false}
         value={formValues.requestConfig}
         onChange={(e) => {
           setFormValues({
@@ -176,6 +180,7 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
         id={`form-${id}-transformMap`}
         rows={10}
         className='code'
+        spellCheck={false}
         value={formValues.transformMap}
         onChange={(e) => {
           setFormValues({

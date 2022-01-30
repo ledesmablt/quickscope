@@ -108,6 +108,7 @@ const YamlEditor = ({ value, onChange, onSave }: Props): ReactElement => {
     <div className='w-full'>
       <textarea
         placeholder={placeholderText}
+        spellCheck={false}
         value={value}
         onChange={(e) => {
           onChange(e.target.value)

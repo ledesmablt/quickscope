@@ -161,6 +161,7 @@ const Search = (): ReactElement => {
         type='text'
         className='border rounded-t p-2 w-md'
         placeholder='Search'
+        spellCheck={false}
         value={searchText}
         onChange={(e) => {
           setSearchText(e.target.value)

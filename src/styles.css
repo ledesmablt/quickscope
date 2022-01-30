@@ -5,3 +5,22 @@
 .full {
   @apply w-full h-full
 }
+
+textarea.code {
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: scroll;
+  @apply p-1 border rounded w-full font-mono
+}
+
+input {
+  @apply p-1 border rounded
+}
+
+p.error {
+  @apply text-red-600
+}
+
+p.success {
+  @apply text-green-600
+}

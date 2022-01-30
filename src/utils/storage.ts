@@ -1,12 +1,14 @@
 // in case supporting different browsers, can use this as an "API"
 
 import { SearchEntry } from 'src/types'
+import { CallExternalOptions } from './callExternal'
 
 export interface LocalStorage {
   searchText?: string
   asyncSearchList?: string[]
   myList?: SearchEntry[]
   'options.filter.excludeList'?: Record<string, boolean>
+  'options.list.callExternalConfigs'?: CallExternalOptions[]
 }
 
 export default {

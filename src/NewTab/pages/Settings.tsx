@@ -4,6 +4,7 @@ import _ from 'lodash'
 import storage from 'src/utils/storage'
 import YamlEditor from '../components/YamlEditor'
 import FilterOptions from '../components/FilterOptions'
+import ExternalRequestsConfig from '../components/ExternalRequestsConfig'
 
 const Settings = (): ReactElement => {
   // TODO: save multiple lists
@@ -18,11 +19,11 @@ const Settings = (): ReactElement => {
   return (
     <div className='full'>
       <p>settings</p>
+
       <div className='p-2' />
-
       <FilterOptions />
-      <div className='p-4' />
 
+      <div className='p-4' />
       <p>
         <b>my list</b>
       </p>
@@ -33,6 +34,12 @@ const Settings = (): ReactElement => {
           storage.set({ myList: myListData })
         }}
       />
+
+      <div className='p-4' />
+      <p>
+        <b>external requests</b>
+      </p>
+      <ExternalRequestsConfig />
     </div>
   )
 }

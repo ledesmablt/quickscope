@@ -113,7 +113,7 @@ const YamlEditor = ({ value, onChange, onSave }: Props): ReactElement => {
           onChange(e.target.value)
         }}
         rows={numLines}
-        className='mt-1 p-1 border rounded w-full font-mono'
+        className='code mt-1'
       />
       {!!error?.message && <p className='text-red-600 pb-2'>{error.message}</p>}
       <button

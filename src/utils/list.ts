@@ -1,5 +1,7 @@
+import _ from 'lodash'
 import { SearchEntry } from 'src/types'
 import { getBookmarks } from './bookmarks'
+import callExternal from './callExternal'
 import storage from './storage'
 
 const getMyList = async (): Promise<SearchEntry[]> => {
@@ -10,10 +12,35 @@ const getMyList = async (): Promise<SearchEntry[]> => {
   return (await storage.get('myList')) || []
 }
 
+export const makeExternalRequests = async (): Promise<SearchEntry[]> => {
+  const externalConfigs = await storage.get('options.list.callExternalConfigs')
+  if (!_.isArray(externalConfigs)) {
+    return []
+  }
+  return _.flatten(
+    await Promise.all(
+      externalConfigs.map(async (externalConfig) => {
+        try {
+          const data = await callExternal(externalConfig)
+          return data
+        } catch (err) {
+          console.error(err)
+          return []
+        }
+      })
+    )
+  )
+}
+
 // builds only on page load
 export const buildStaticList = async () => {
-  const [myList, bookmarks] = await Promise.all([getMyList(), getBookmarks()])
-  return [...myList, ...bookmarks]
+  // DO NOT COMMIT
+  const [myList, bookmarks, externalRequests] = await Promise.all([
+    getMyList(),
+    getBookmarks(),
+    makeExternalRequests()
+  ])
+  return [...myList, ...bookmarks, ...externalRequests]
 }
 
 // searchable - useful for API calls expecting frequently changing output

@@ -1,41 +1,21 @@
 import { SearchEntry } from 'src/types'
-import { formatBookmark, searchBookmarks } from './bookmarks'
+import { formatBookmark, getBookmarks } from './bookmarks'
 import storage from './storage'
 
-export const TEST_LIST = [
-  'go',
-  'javascript',
-  'python',
-  'rust',
-  'swift',
-  'kotlin',
-  'elixir',
-  'java',
-  'lisp',
-  'v',
-  'zig',
-  'nim',
-  'rescript',
-  'd',
-  'haskell'
-]
-
-export const buildSearchList = (): SearchEntry[] => {
-  // todo: build from different sources
-  return TEST_LIST.map((v) => ({
-    url: 'https://' + v + '.com',
-    title: v
-  }))
-}
-
-export const buildAsyncSearchList = async (
-  searchText?: string
-): Promise<SearchEntry[]> => {
+// builds only on page load
+export const buildStaticList = async () => {
   const mySearchList: SearchEntry[] = await storage.get('myList')
-  const bookmarks = (await searchBookmarks(searchText || ''))
+  const bookmarks = (await getBookmarks())
     .filter((b) => b.url)
     .map(formatBookmark)
   return [...mySearchList, ...bookmarks]
+}
+
+// searchable - useful for API calls expecting frequently changing output
+export const buildSearchableList = async (
+  searchText: string
+): Promise<SearchEntry[]> => {
+  return []
 }
 
 export interface FilterFlags {
@@ -43,11 +23,18 @@ export interface FilterFlags {
     url?: string
     title?: string
     description?: string
+    in?: string
   }
   stringEquals: {
     label?: string
   }
 }
+
+// for special keywords that aren't in the SearchEntry Property
+const filterPropMap: Record<string, keyof SearchEntry> = {
+  in: 'label'
+}
+
 export const filterSearchList = (
   list: SearchEntry[],
   filterFlags: FilterFlags
@@ -58,7 +45,8 @@ export const filterSearchList = (
       // searchEntry url must contain stringContains.url, and so on
       return Object.entries(filterFlags.stringContains).every(
         ([key, value]) => {
-          const entryValue: string = searchEntry[key]
+          const entryKey = filterPropMap[key] || key
+          const entryValue: string = searchEntry[entryKey]
           if (!entryValue) {
             return false
           }

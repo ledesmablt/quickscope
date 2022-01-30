@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { SearchEntry } from 'src/types'
-import { buildAsyncSearchList } from './list'
-import useStateCached from './useStateCached'
+import { buildSearchableList, buildStaticList } from './list'
 
 interface AsyncSearchListResult {
   searchList: SearchEntry[]
@@ -9,30 +8,58 @@ interface AsyncSearchListResult {
   loading: boolean
 }
 export default (searchText: string = ''): AsyncSearchListResult => {
-  const [searchList, setSearchList] = useStateCached<SearchEntry[]>(
-    'asyncSearchList',
-    []
-  )
-  const [loading, setLoading] = useState(false)
+  // loading
+  const [staticLoading, setStaticLoading] = useState(true)
+  const [searchableLoading, setSearchableLoading] = useState(true)
+
+  const [numStaticTriggers, setNumStaticTriggers] = useState(0)
+  const [numSearchableTriggers, setNumSearchableTriggers] = useState(0)
+
+  // lists
+  const [searchList, setSearchList] = useState<SearchEntry[]>([])
+  const [staticList, setStaticList] = useState<SearchEntry[]>([])
+  const [searchableList, setSearchableList] = useState<SearchEntry[]>([])
+
   const [numTriggers, setNumTriggers] = useState(0)
+
   useEffect(() => {
-    // async list
+    // load static
     const effect = async () => {
-      setLoading(true)
-      const newSearchList = await buildAsyncSearchList(searchText)
-      if (newSearchList.length > 0) {
-        // only save non-empty lists
-        setSearchList(newSearchList)
-        setNumTriggers((n) => n + 1)
+      setStaticList(await buildStaticList())
+      setStaticLoading(false)
+      setNumStaticTriggers((n) => n + 1)
+    }
+    effect()
+  }, [])
+
+  useEffect(() => {
+    // load searchable list
+    const effect = async () => {
+      setSearchableLoading(true)
+      const newSearchList = await buildSearchableList(searchText)
+      if (newSearchList?.length) {
+        setSearchableList(newSearchList)
+        setNumSearchableTriggers((n) => n + 1)
       }
-      setLoading(false)
+      setSearchableLoading(false)
     }
     effect()
   }, [searchText])
 
+  useEffect(() => {
+    if (staticLoading && searchableLoading) {
+      return
+    }
+    const combinedList = [...staticList, ...searchableList]
+    if (combinedList.length) {
+      setSearchList(combinedList)
+      setNumTriggers((n) => n + 1)
+    }
+  }, [numStaticTriggers, numSearchableTriggers])
+
   return {
     searchList,
-    loading,
+    loading: staticLoading || searchableLoading,
     numTriggers
   }
 }

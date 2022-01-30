@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState
 } from 'react'
-import { buildSearchList, filterSearchList } from 'src/utils/list'
+import { filterSearchList } from 'src/utils/list'
 import searchParser from 'src/utils/searchParser'
 import useAsyncSearchList from 'src/utils/useAsyncSearchList'
 import useDebounce from 'src/utils/useDebounce'
@@ -24,6 +24,8 @@ const onLaunch = (url: string, options?: OnLaunchOptions) => {
   }
 }
 
+const LIMIT = 100
+
 const Search = (): ReactElement => {
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -33,37 +35,36 @@ const Search = (): ReactElement => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [disableMouseEvent, setDisableMouseSelect] = useState(false)
 
-  const debouncedSearchText = useDebounce(searchText)
-  const searchInput = useMemo(
-    () => searchParser(debouncedSearchText),
-    [debouncedSearchText]
-  )
+  const searchInput = useMemo(() => searchParser(searchText), [searchText])
+  const debouncedSearchInput = useDebounce(searchInput)
 
   const { searchList: asyncSearchList, numTriggers: numAsyncTriggers } =
-    useAsyncSearchList(debouncedSearchText)
+    useAsyncSearchList(debouncedSearchInput.searchText)
 
+  const searchList = useMemo(
+    () => filterSearchList(asyncSearchList, searchInput.flags),
+    [
+      numAsyncTriggers,
+      searchInput.flags.stringContains,
+      searchInput.flags.stringEquals
+    ]
+  )
   const fzf = useMemo(() => {
-    // TODO: optimize
-    const syncSearchList = buildSearchList()
-    const list = filterSearchList(
-      [...syncSearchList, ...asyncSearchList],
-      searchInput.flags
-    )
-    return new Fzf(list, {
+    return new Fzf(searchList, {
       selector: (v) => {
         return v.title + v.url || '' + v.description || ''
       },
-      match: extendedMatch
+      match: extendedMatch,
+      limit: LIMIT
     })
-  }, [
-    numAsyncTriggers,
-    searchInput.flags.stringContains,
-    searchInput.flags.stringEquals
-  ])
+  }, [searchList])
 
   const results = useMemo(() => {
-    return searchText ? fzf.find(searchInput.searchText) : []
-  }, [searchText, fzf])
+    const resultList = debouncedSearchInput.searchText
+      ? fzf.find(searchInput.searchText)
+      : []
+    return resultList
+  }, [debouncedSearchInput.searchText, fzf])
   const selectedResult = results[selectedIndex]?.item
 
   useEffect(() => {

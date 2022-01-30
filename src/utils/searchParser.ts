@@ -13,7 +13,8 @@ const regex = /([^\s:]+):([^\s]*|(["'])(?:(?=(\\?))\2.)*?\1)/g
 const stringContainsKeys: (keyof FilterFlags['stringContains'])[] = [
   'url',
   'title',
-  'description'
+  'description',
+  'in'
 ]
 const stringEqualsKeys: (keyof FilterFlags['stringEquals'])[] = ['label']
 

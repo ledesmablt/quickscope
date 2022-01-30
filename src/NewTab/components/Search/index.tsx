@@ -85,14 +85,25 @@ const Search = (): ReactElement => {
         return
       }
       onLaunch(selectedResult.url, { newTab: e.ctrlKey || e.metaKey })
-    } else if (e.key === '/') {
-      if (document.activeElement !== inputRef?.current) {
-        // focus input
-        e.preventDefault()
-        inputRef?.current?.focus()
-      }
     }
   }
+
+  useEffect(() => {
+    // global event listeners
+    const onGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '/') {
+        if (document.activeElement !== inputRef?.current) {
+          // focus input
+          e.preventDefault()
+          inputRef?.current?.focus()
+        }
+      }
+    }
+    document.addEventListener('keydown', onGlobalKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onGlobalKeyDown)
+    }
+  }, [])
 
   return (
     <div

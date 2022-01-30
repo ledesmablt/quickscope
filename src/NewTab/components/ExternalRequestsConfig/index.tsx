@@ -39,6 +39,7 @@ const ExternalRequestsConfig = (): ReactElement => {
 
   const onRemove = (index: number) => {
     saveCachedOptions(cachedOptions.filter((_option, i) => i !== index))
+    setOptions(options.filter((_option, i) => i !== index))
   }
 
   return (
@@ -46,8 +47,8 @@ const ExternalRequestsConfig = (): ReactElement => {
       {options?.map((option, index) => {
         return (
           <Form
-            id={index}
             key={index}
+            isNew={index >= cachedOptions?.length}
             defaultValue={option}
             onSave={(newOption) => {
               onSave(newOption, index)

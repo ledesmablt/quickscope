@@ -1,6 +1,7 @@
 import _ from 'lodash'
-import React, { ReactElement, useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useMemo, useState } from 'react'
 import callExternal, { CallExternalOptions } from 'src/utils/callExternal'
+import Accordion from '../Accordion'
 
 type FormValues = {
   [Property in keyof CallExternalOptions]: string
@@ -61,12 +62,18 @@ interface TestStatus {
 }
 
 interface Props {
-  id: string | number
   defaultValue: FormValues
   onSave: (newOptions: CallExternalOptions) => void
   onRemove: VoidFunction
+  isNew?: boolean
 }
-const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
+const Form = ({
+  defaultValue,
+  onSave,
+  onRemove,
+  isNew
+}: Props): ReactElement => {
+  const id = useMemo(() => _.uniqueId(), [])
   const [formValues, setFormValues] = useState<FormValues>(defaultValue)
   const [testStatus, setTestStatus] = useState<TestStatus>({})
   const [isSaved, setIsSaved] = useState(true)
@@ -108,122 +115,133 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
   }
 
   const onRemoveInner = () => {
-    const approved = confirm(
-      `Remove "${formValues.name}" from external requests?`
-    )
+    const message = isNew
+      ? 'Cancel external request creation?'
+      : `Remove "${formValues.name}" from external requests?`
+    const approved = confirm(message)
     if (approved) {
       onRemove()
     }
   }
 
   return (
-    <div className='w-full border p-2 flex flex-col gap-1 items-start'>
-      <label htmlFor={`form-${id}-name`}>name</label>
-      <input
-        id={`form-${id}-name`}
-        className='border rouded p-1'
-        type='text'
-        spellCheck={false}
-        value={formValues.name}
-        onChange={(e) => {
-          setFormValues({
-            ...formValues,
-            name: e.target.value
-          })
-        }}
-      />
-      {errors.name && <p className='error'>{errors.name}</p>}
+    <Accordion
+      title={<p className='underline'>{formValues.name}</p>}
+      defaultOpen={isNew}
+    >
+      <div className='w-full pt-4 flex flex-col gap-1 items-start'>
+        <label htmlFor={`form-${id}-name`}>name</label>
+        <input
+          id={`form-${id}-name`}
+          className='border rouded p-1'
+          type='text'
+          spellCheck={false}
+          value={formValues.name}
+          onChange={(e) => {
+            setFormValues({
+              ...formValues,
+              name: e.target.value
+            })
+          }}
+        />
+        {errors.name && <p className='error'>{errors.name}</p>}
 
-      <label className='mt-1' htmlFor={`form-${id}-label`}>
-        label (optional)
-      </label>
-      <input
-        id={`form-${id}-label`}
-        className='border rounded p-1'
-        type='text'
-        spellCheck={false}
-        value={formValues.label}
-        onChange={(e) => {
-          setFormValues({
-            ...formValues,
-            label: e.target.value
-          })
-        }}
-      />
+        <label className='mt-1' htmlFor={`form-${id}-label`}>
+          label (optional)
+        </label>
+        <input
+          id={`form-${id}-label`}
+          className='border rounded p-1'
+          type='text'
+          spellCheck={false}
+          value={formValues.label}
+          onChange={(e) => {
+            setFormValues({
+              ...formValues,
+              label: e.target.value
+            })
+          }}
+        />
 
-      <label className='mt-1' htmlFor={`form-${id}-pathToData`}>
-        path to data (optional)
-      </label>
-      <input
-        id={`form-${id}-pathToData`}
-        className='border rounded p-1'
-        type='text'
-        spellCheck={false}
-        value={formValues.pathToData}
-        onChange={(e) => {
-          setFormValues({
-            ...formValues,
-            pathToData: e.target.value
-          })
-        }}
-      />
+        <label className='mt-1' htmlFor={`form-${id}-pathToData`}>
+          path to data (optional)
+        </label>
+        <input
+          id={`form-${id}-pathToData`}
+          className='border rounded p-1'
+          type='text'
+          spellCheck={false}
+          value={formValues.pathToData}
+          onChange={(e) => {
+            setFormValues({
+              ...formValues,
+              pathToData: e.target.value
+            })
+          }}
+        />
 
-      <label className='mt-1' htmlFor={`form-${id}-requestConfig`}>
-        axios request config
-      </label>
-      <textarea
-        id={`form-${id}-requestConfig`}
-        rows={6}
-        className='code'
-        spellCheck={false}
-        value={formValues.requestConfig}
-        onChange={(e) => {
-          setFormValues({
-            ...formValues,
-            requestConfig: e.target.value
-          })
-        }}
-      />
-      {errors.requestConfig && <p className='error'>{errors.requestConfig}</p>}
+        <label className='mt-1' htmlFor={`form-${id}-requestConfig`}>
+          axios request config
+        </label>
+        <textarea
+          id={`form-${id}-requestConfig`}
+          rows={6}
+          className='code'
+          spellCheck={false}
+          value={formValues.requestConfig}
+          onChange={(e) => {
+            setFormValues({
+              ...formValues,
+              requestConfig: e.target.value
+            })
+          }}
+        />
+        {errors.requestConfig && (
+          <p className='error'>{errors.requestConfig}</p>
+        )}
 
-      <label className='mt-1' htmlFor={`form-${id}-transformMap`}>
-        transform map
-      </label>
-      <textarea
-        id={`form-${id}-transformMap`}
-        rows={6}
-        className='code'
-        spellCheck={false}
-        value={formValues.transformMap}
-        onChange={(e) => {
-          setFormValues({
-            ...formValues,
-            transformMap: e.target.value
-          })
-        }}
-      />
-      {errors.transformMap && <p className='error'>{errors.transformMap}</p>}
+        <label className='mt-1' htmlFor={`form-${id}-transformMap`}>
+          transform map
+        </label>
+        <textarea
+          id={`form-${id}-transformMap`}
+          rows={6}
+          className='code'
+          spellCheck={false}
+          value={formValues.transformMap}
+          onChange={(e) => {
+            setFormValues({
+              ...formValues,
+              transformMap: e.target.value
+            })
+          }}
+        />
+        {errors.transformMap && <p className='error'>{errors.transformMap}</p>}
 
-      <div className='mt-2 flex flex-col items-start gap-1'>
-        <p>
-          <b>actions</b>
-        </p>
-        <div className='flex gap-2 items-center'>
-          <button onClick={onTest} disabled={testStatus?.loading}>
-            test
+        <div className='mt-2 flex flex-col items-start gap-1'>
+          <p>
+            <b>actions</b>
+          </p>
+          <div className='flex gap-2 items-center'>
+            <button onClick={onTest} disabled={testStatus?.loading}>
+              test
+            </button>
+            {testStatus?.error && <p className='error'>{testStatus.error}</p>}
+            {testStatus?.loading && <p>loading...</p>}
+            {testStatus?.ok && <p className='success'>OK!</p>}
+          </div>
+          <div className='flex gap-2 items-center'>
+            <button onClick={onSaveInner} disabled={!testStatus?.ok || isSaved}>
+              {isSaved ? 'saved!' : 'save'}
+            </button>
+            {!testStatus?.ok && <p>test must pass before saving</p>}
+          </div>
+          <button onClick={onRemoveInner} disabled={testStatus?.loading}>
+            {isNew ? 'cancel' : 'remove'}
           </button>
-          {testStatus?.error && <p className='error'>{testStatus.error}</p>}
-          {testStatus?.loading && <p>loading...</p>}
-          {testStatus?.ok && <p className='success'>OK!</p>}
         </div>
-        <button onClick={onSaveInner} disabled={!testStatus?.ok || isSaved}>
-          {isSaved ? 'saved!' : 'save'}
-        </button>
-        <button onClick={onRemoveInner} disabled={testStatus?.loading}>
-          remove
-        </button>
       </div>
-    </div>
+    </Accordion>
   )
 }
 export default Form

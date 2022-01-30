@@ -69,6 +69,7 @@ interface Props {
 const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
   const [formValues, setFormValues] = useState<FormValues>(defaultValue)
   const [testStatus, setTestStatus] = useState<TestStatus>({})
+  const [isSaved, setIsSaved] = useState(true)
 
   const errors: FormValues = {
     name: !formValues.name && 'name is required',
@@ -78,6 +79,7 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
 
   useEffect(() => {
     setTestStatus({})
+    setIsSaved(false)
   }, [formValues])
 
   const onTest = async () => {
@@ -91,9 +93,10 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
         ok: true
       })
     } catch (err: any) {
+      console.error(err)
       setTestStatus({
         ok: false,
-        error: err?.message || err?.toString()
+        error: err?.toString()
       })
     }
   }
@@ -101,6 +104,16 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
   const onSaveInner = () => {
     const options = formatAsOptions(formValues)
     onSave(options)
+    setIsSaved(true)
+  }
+
+  const onRemoveInner = () => {
+    const approved = confirm(
+      `Remove "${formValues.name}" from external requests?`
+    )
+    if (approved) {
+      onRemove()
+    }
   }
 
   return (
@@ -160,7 +173,7 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
       </label>
       <textarea
         id={`form-${id}-requestConfig`}
-        rows={10}
+        rows={6}
         className='code'
         spellCheck={false}
         value={formValues.requestConfig}
@@ -178,7 +191,7 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
       </label>
       <textarea
         id={`form-${id}-transformMap`}
-        rows={10}
+        rows={6}
         className='code'
         spellCheck={false}
         value={formValues.transformMap}
@@ -195,18 +208,18 @@ const Form = ({ id, defaultValue, onSave, onRemove }: Props): ReactElement => {
         <p>
           <b>actions</b>
         </p>
-        <div className='flex gap-2'>
-          <button onClick={onTest}>test</button>
-          {testStatus?.error && (
-            <p className='text-red-600'>{testStatus.error}</p>
-          )}
+        <div className='flex gap-2 items-center'>
+          <button onClick={onTest} disabled={testStatus?.loading}>
+            test
+          </button>
+          {testStatus?.error && <p className='error'>{testStatus.error}</p>}
           {testStatus?.loading && <p>loading...</p>}
-          {testStatus?.ok && <p className='text-green-800'>OK!</p>}
+          {testStatus?.ok && <p className='success'>OK!</p>}
         </div>
-        <button onClick={onSaveInner} disabled={!testStatus?.ok}>
-          save
+        <button onClick={onSaveInner} disabled={!testStatus?.ok || isSaved}>
+          {isSaved ? 'saved!' : 'save'}
         </button>
-        <button onClick={onRemove} disabled={testStatus?.loading}>
+        <button onClick={onRemoveInner} disabled={testStatus?.loading}>
           remove
         </button>
       </div>

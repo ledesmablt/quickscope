@@ -47,7 +47,7 @@ const YamlEditor = ({ value, onChange, onSave }: Props): ReactElement => {
     setSaved(false)
   }, [value])
 
-  const numLines = Math.min(Math.max(15, value.split('\n').length), 25)
+  const numLines = Math.min(Math.max(10, value.split('\n').length), 25)
 
   const { data: validatedList, error } = useMemo<YamlParseResult>(() => {
     if (!value) {
@@ -116,11 +116,8 @@ const YamlEditor = ({ value, onChange, onSave }: Props): ReactElement => {
         rows={numLines}
         className='code mt-1'
       />
-      {!!error?.message && <p className='text-red-600 pb-2'>{error.message}</p>}
+      {!!error?.message && <p className='error'>{error.message}</p>}
       <button
-        className={`p-1 w-16 border rounded hover:bg-gray-100 ${
-          submitDisabled ? 'bg-gray-100 text-gray-400' : ''
-        }`}
         disabled={submitDisabled}
         onClick={() => {
           onSave(validatedList)

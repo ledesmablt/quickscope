@@ -24,3 +24,11 @@ p.error {
 p.success {
   @apply text-green-600
 }
+
+button {
+  @apply p-1 w-16 border rounded hover:bg-gray-100 
+}
+
+button:disabled {
+  @apply bg-gray-100 text-gray-400
+}

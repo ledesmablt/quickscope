@@ -26,7 +26,7 @@ const ExternalRequestsConfig = (): ReactElement => {
     if (!cachedOptions) {
       // first time setting
       saveCachedOptions([newOption])
-    } else if (index > cachedOptions.length) {
+    } else if (index >= cachedOptions.length) {
       // append
       saveCachedOptions([...cachedOptions, newOption])
     } else {
@@ -42,7 +42,7 @@ const ExternalRequestsConfig = (): ReactElement => {
   }
 
   return (
-    <div className='flex flex-col items-start gap-2 py-2'>
+    <div className='flex flex-col items-start gap-4 py-2'>
       {options?.map((option, index) => {
         return (
           <Form

@@ -3,12 +3,10 @@ import Search from '../components/Search'
 
 const Home = (): ReactElement => {
   return (
-    <div className='w-full h-full'>
+    <div className='grow flex flex-col w-full max-h-[20rem] tall:max-h-[min(80vh,40rem)]'>
       <p className='pb-2'>quickscope</p>
-      <div className='full max-h-[40rem]'>
-        <Search />
-      </div>
-      <div className='pb-8' />
+      <Search />
+      <div className='pb-4 tall:pb-8' />
     </div>
   )
 }

@@ -2,7 +2,13 @@ module.exports = {
   mode: 'jit',
   content: ['./src/**/*.{tsx,ts}'],
   theme: {
-    extend: {}
+    extend: {
+      screens: {
+        tall: {
+          raw: '(min-height: 600px)'
+        }
+      }
+    }
   },
   plugins: []
 }

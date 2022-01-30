@@ -8,7 +8,7 @@ const SearchItem = ({ searchEntry }: Props): ReactElement => {
   return (
     <a href={searchEntry.url}>
       <div className='inline-block w-full flex justify-between items-end'>
-        <span className='truncate flex-grow'>
+        <span className='truncate grow'>
           {searchEntry.title || searchEntry.url}
         </span>
         {searchEntry.title && (

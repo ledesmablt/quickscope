@@ -12,7 +12,8 @@ const NewTab = (): ReactElement => {
     <MemoryRouter>
       <div className='w-screen h-screen px-8 py-4 flex flex-col justify-center items-center text-gray-900'>
         <Nav />
-        <div className='w-1/2 min-w-[24rem] max-w-[40rem] h-full min-h-[30rem] flex flex-col items-center pt-20'>
+        <div className='pt-8' />
+        <div className='w-1/2 min-w-[24rem] max-w-[40rem] flex flex-col items-center grow'>
           <Routes>
             <Route path='/settings' element={<Settings />} />
             <Route path='/' element={<Home />} />

@@ -60,9 +60,10 @@ const Search = (): ReactElement => {
   }, [searchList])
 
   const results = useMemo(() => {
-    const resultList = debouncedSearchInput.searchText
-      ? fzf.find(searchInput.searchText)
-      : []
+    const resultList =
+      searchText && debouncedSearchInput.searchText
+        ? fzf.find(searchInput.searchText)
+        : []
     return resultList
   }, [debouncedSearchInput.searchText, fzf])
   const selectedResult = results[selectedIndex]?.item

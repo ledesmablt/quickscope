@@ -16,6 +16,7 @@ const Home = (): ReactElement => {
         <p className='text-sm'>quickscope</p>
         <div>
           <button
+            tabIndex={-1}
             onClick={() => {
               setFilterOpen(true)
             }}

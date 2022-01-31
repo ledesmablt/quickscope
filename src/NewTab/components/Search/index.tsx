@@ -94,7 +94,8 @@ const Search = (): ReactElement => {
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     setDisableMouseSelect(true)
-    if (e.key === 'ArrowDown') {
+    const ctrlPressed = e.ctrlKey || e.metaKey
+    if (e.key === 'ArrowDown' || (e.key === 'j' && ctrlPressed)) {
       e.preventDefault()
       if (!selectedRef.current.nextElementSibling) {
         return
@@ -113,7 +114,7 @@ const Search = (): ReactElement => {
       if (selectedBottom > containerBottom) {
         selectedRef.current.nextElementSibling?.scrollIntoView(false)
       }
-    } else if (e.key === 'ArrowUp') {
+    } else if (e.key === 'ArrowUp' || (e.key === 'k' && ctrlPressed)) {
       e.preventDefault()
       if (!selectedRef.current.previousElementSibling) {
         return
@@ -136,7 +137,7 @@ const Search = (): ReactElement => {
       if (!selectedResult) {
         return
       }
-      onLaunch(selectedResult.url, { newTab: e.ctrlKey || e.metaKey })
+      onLaunch(selectedResult.url, { newTab: ctrlPressed })
     }
   }
 

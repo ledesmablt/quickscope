@@ -1,23 +1,25 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 import _ from 'lodash'
-import storage from 'src/utils/storage'
 import YamlEditor from '../components/YamlEditor'
 import FilterOptions from '../components/FilterOptions'
 import ExternalRequestsConfig from '../components/ExternalRequestsConfig'
 import { exportMyListCsv, exportSettingsJson } from 'src/utils/export'
 import { importMyListCsv, importSettingsJson } from 'src/utils/import'
 import { useNavigate } from 'react-router-dom'
+import useStateCached from 'src/utils/useStateCached'
 
 const Settings = (): ReactElement => {
   const navigate = useNavigate()
-  // not using useStateCached since should be valid before saving
+  const [myListTextCached, setMyListTextCached] =
+    useStateCached<string>('myList')
   const [myListText, setMyListText] = useState('')
 
   useEffect(() => {
-    storage.get('myList').then((data) => {
-      setMyListText(data)
-    })
-  }, [])
+    // override on state changes
+    if (myListTextCached) {
+      setMyListText(myListTextCached)
+    }
+  }, [myListTextCached])
 
   useEffect(() => {
     // global event listeners
@@ -48,9 +50,7 @@ const Settings = (): ReactElement => {
       <YamlEditor
         value={myListText}
         onChange={setMyListText}
-        onSave={(myListData) => {
-          storage.set({ myList: myListData })
-        }}
+        onSave={setMyListTextCached}
         onImport={importMyListCsv}
         onExport={exportMyListCsv}
       />

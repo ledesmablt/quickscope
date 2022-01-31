@@ -1,12 +1,12 @@
 /* accordion */
 .Accordion {
-  @apply w-full border rounded p-2 overflow-hidden
+  @apply w-full overflow-hidden border rounded p-2
 }
 
 .Accordion input:checked ~ .Accordion_content {
-  @apply max-h-screen
+  @apply max-h-fit h-min
 }
 
 .Accordion_content {
-  @apply w-full overflow-hidden max-h-0 transition-[max-height]
+  @apply w-full max-h-0 transition-[max-height]
 }

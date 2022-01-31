@@ -8,6 +8,7 @@ export interface CallExternalOptions {
   transformMap?: Record<string, string> //url: 'item.link'
   pathToData?: string // _.property
   label?: string
+  enabled?: boolean
   name?: string
 }
 export default async ({

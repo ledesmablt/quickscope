@@ -3,8 +3,13 @@ import React, { ReactElement, useEffect, useMemo, useState } from 'react'
 import callExternal, { CallExternalOptions } from 'src/utils/callExternal'
 import Accordion from '../Accordion'
 
-type FormValues = {
-  [Property in keyof CallExternalOptions]: string
+interface FormValues {
+  requestConfig?: string
+  transformMap?: string
+  pathToData?: string // _.property
+  label?: string
+  enabled?: boolean
+  name?: string
 }
 
 export const newOptionDefault: FormValues = {
@@ -18,7 +23,8 @@ export const newOptionDefault: FormValues = {
   "url": "path.to.url",
   "title": "path.to.title"
 }`,
-  name: 'New Request Config'
+  name: 'New Request Config',
+  enabled: true
 }
 
 export const formatAsStrings = (options: CallExternalOptions): FormValues => {
@@ -179,6 +185,22 @@ const Form = ({
             })
           }}
         />
+
+        <div className='flex gap-1 items-center'>
+          <input
+            type='checkbox'
+            checked={!!formValues.enabled}
+            onChange={() => {
+              setFormValues({
+                ...formValues,
+                enabled: !formValues.enabled
+              })
+            }}
+          />
+          <label htmlFor={`form-${id}-enabled`}>enabled?</label>
+        </div>
+
+        <div className='pt-2' />
 
         <label className='mt-1' htmlFor={`form-${id}-requestConfig`}>
           axios request config

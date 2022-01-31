@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { SearchEntry } from 'src/types'
 import { getBookmarks } from './bookmarks'
-import callExternal from './callExternal'
+import callExternal, { CallExternalOptions } from './callExternal'
 import { parseYamlString } from './dataParser'
 import storage from './storage'
 
@@ -20,21 +20,25 @@ const getMyList = async (): Promise<SearchEntry[]> => {
 }
 
 export const makeExternalRequests = async (): Promise<SearchEntry[]> => {
-  const externalConfigs = await storage.get('options.list.callExternalConfigs')
+  const externalConfigs: CallExternalOptions[] = await storage.get(
+    'options.list.callExternalConfigs'
+  )
   if (!_.isArray(externalConfigs)) {
     return []
   }
   return _.flatten(
     await Promise.all(
-      externalConfigs.map(async (externalConfig) => {
-        try {
-          const data = await callExternal(externalConfig)
-          return data
-        } catch (err) {
-          console.error(err)
-          return []
-        }
-      })
+      externalConfigs
+        .filter((c) => c.enabled)
+        .map(async (externalConfig) => {
+          try {
+            const data = await callExternal(externalConfig)
+            return data
+          } catch (err) {
+            console.error(err)
+            return []
+          }
+        })
     )
   )
 }

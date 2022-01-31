@@ -57,18 +57,22 @@ export const buildSearchableList = async (
   return []
 }
 
-export interface FilterFlags {
+export interface FieldMatchOptions {
+  text: string
   matchType: 'includes' | 'equals'
+}
+
+export interface FilterFlags {
   string: {
-    url?: string
-    title?: string
-    description?: string
-    in?: string
-    label?: string
+    url?: FieldMatchOptions
+    title?: FieldMatchOptions
+    description?: FieldMatchOptions
+    label?: FieldMatchOptions
+    in?: FieldMatchOptions
   }
   array: {
-    tag?: string
-    tags?: string
+    tag?: FieldMatchOptions
+    tags?: FieldMatchOptions
   }
 }
 
@@ -94,10 +98,11 @@ export const filterSearchList = (
         if (!entryValue) {
           return false
         }
-        if (filterFlags.matchType === 'equals') {
-          return entryValue.toLowerCase() === value.toLowerCase()
-        } else if (filterFlags.matchType === 'includes') {
-          return entryValue.toLowerCase().search(value.toLowerCase()) >= 0
+        const { text, matchType } = value
+        if (matchType === 'equals') {
+          return entryValue.toLowerCase() === text.toLowerCase()
+        } else if (matchType === 'includes') {
+          return entryValue.toLowerCase().search(text.toLowerCase()) >= 0
         } else {
           throw new Error('invalid match type')
         }
@@ -112,11 +117,12 @@ export const filterSearchList = (
         if (!_.isArray(entryValue) || !entryValue?.length) {
           return false
         }
-        if (filterFlags.matchType === 'equals') {
-          return entryValue.find((v) => v.toLowerCase() === value.toLowerCase())
-        } else if (filterFlags.matchType === 'includes') {
+        const { text, matchType } = value
+        if (matchType === 'equals') {
+          return entryValue.find((v) => v.toLowerCase() === text.toLowerCase())
+        } else if (matchType === 'includes') {
           return entryValue.find(
-            (v) => v.toLowerCase().search(value.toLowerCase()) >= 0
+            (v) => v.toLowerCase().search(text.toLowerCase()) >= 0
           )
         } else {
           throw new Error('invalid match type')

@@ -1,4 +1,4 @@
-import { FilterFlags } from './list'
+import { FieldMatchOptions, FilterFlags } from './list'
 
 interface SearchParserResult {
   searchText: string
@@ -7,6 +7,7 @@ interface SearchParserResult {
 
 const regex = /([^\s:]+)(:|=)([^\s]*|(["'])(?:(?=(\\?))\2.)*?\1)/g
 // first group: property name
+// second group: match operator
 // subsequent groups: property value
 // everything else: fuzzy search query
 
@@ -22,21 +23,22 @@ const arrayKeys: (keyof FilterFlags['array'])[] = ['tag', 'tags']
 export default (searchText: string = ''): SearchParserResult => {
   const matches = searchText.matchAll(regex) || []
   const flags: FilterFlags = {
-    matchType: 'includes',
     string: {},
     array: {}
   }
   let text = searchText
   for (const match of matches) {
     const key = match?.[1]
-    let matchType = match?.[2]
+    let matchOperator = match?.[2]
     let value: string = match?.[3]
 
-    if (!value || !matchType || !key) {
+    if (!value || !matchOperator || !key) {
       continue
     }
-    if (matchType === '=') {
-      flags.matchType = 'equals'
+
+    let matchType: FieldMatchOptions['matchType'] = 'includes'
+    if (matchOperator === '=') {
+      matchType = 'equals'
     }
 
     for (const q of ['"', "'"]) {
@@ -46,9 +48,15 @@ export default (searchText: string = ''): SearchParserResult => {
       }
     }
     if (stringKeys.includes(key)) {
-      flags.string[key] = value
+      flags.string[key] = {
+        text: value,
+        matchType
+      }
     } else if (arrayKeys.includes(key)) {
-      flags.array[key] = value
+      flags.array[key] = {
+        text: value,
+        matchType
+      }
     }
     text = text.replace(match[0], '')
   }

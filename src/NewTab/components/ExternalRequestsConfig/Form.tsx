@@ -95,7 +95,8 @@ const Form = ({
     })
     const options = formatAsOptions(formValues)
     try {
-      await callExternal(options)
+      const result = await callExternal(options)
+      console.log(`test result - ${formValues.name}`, result)
       setTestStatus({
         ok: true
       })
@@ -124,11 +125,10 @@ const Form = ({
     }
   }
 
+  const title = isNew ? `${formValues.name} (unsaved)` : formValues.name
+
   return (
-    <Accordion
-      title={<p className='underline'>{formValues.name}</p>}
-      defaultOpen={isNew}
-    >
+    <Accordion title={<p className='underline'>{title}</p>} defaultOpen={isNew}>
       <div className='w-full pt-4 flex flex-col gap-1 items-start'>
         <label htmlFor={`form-${id}-name`}>name</label>
         <input
@@ -228,7 +228,9 @@ const Form = ({
             </button>
             {testStatus?.error && <p className='error'>{testStatus.error}</p>}
             {testStatus?.loading && <p>loading...</p>}
-            {testStatus?.ok && <p className='success'>OK!</p>}
+            {testStatus?.ok && (
+              <p className='success'>OK! (results logged in console)</p>
+            )}
           </div>
           <div className='flex gap-2 items-center'>
             <button onClick={onSaveInner} disabled={!testStatus?.ok || isSaved}>

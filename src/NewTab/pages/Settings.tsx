@@ -1,5 +1,4 @@
 import React, { ReactElement, useEffect, useState } from 'react'
-import yaml from 'js-yaml'
 import _ from 'lodash'
 import storage from 'src/utils/storage'
 import YamlEditor from '../components/YamlEditor'
@@ -7,12 +6,12 @@ import FilterOptions from '../components/FilterOptions'
 import ExternalRequestsConfig from '../components/ExternalRequestsConfig'
 
 const Settings = (): ReactElement => {
-  // TODO: save multiple lists
+  // not using useStateCached since should be valid before saving
   const [myListText, setMyListText] = useState('')
 
   useEffect(() => {
     storage.get('myList').then((data) => {
-      setMyListText(yaml.dump(data, { skipInvalid: true }))
+      setMyListText(data)
     })
   }, [])
 

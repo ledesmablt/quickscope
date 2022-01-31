@@ -1,10 +1,8 @@
 import React, { ReactElement, useEffect, useMemo, useState } from 'react'
 import yaml from 'js-yaml'
 import _ from 'lodash'
-import validateSearchEntry from 'src/utils/validateSearchEntry'
-import { SearchEntry } from 'src/types'
 import storage from 'src/utils/storage'
-import { ValidationError } from 'yup'
+import { parseYamlString } from 'src/utils/dataParser'
 
 const placeholderText = `# example
 
@@ -15,26 +13,13 @@ const placeholderText = `# example
 - url: http://another_example.com
 `
 
-interface YamlParseResult {
-  data?: SearchEntry[]
-  error?: {
-    message?: string
-    entryNum?: number
-    coordinates?: {
-      line: number
-      col: number
-    }
-  }
-}
-
 interface Props {
   value: string
   onChange: (newValue: string) => void
-  onSave: (parsedData: SearchEntry[]) => void
+  onSave: (value: string) => void
 }
 
-const YamlEditor = ({ value, onChange, onSave }: Props): ReactElement => {
-  // TODO: save multiple lists
+const YamlEditor = ({ value = '', onChange, onSave }: Props): ReactElement => {
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
@@ -49,60 +34,27 @@ const YamlEditor = ({ value, onChange, onSave }: Props): ReactElement => {
 
   const numLines = Math.min(Math.max(10, value.split('\n').length), 25)
 
-  const { data: validatedList, error } = useMemo<YamlParseResult>(() => {
+  const { data: validatedList, error } = useMemo(() => {
     if (!value) {
       return {}
     }
-    let doc: any
-    let data: any[]
-    let errors: string[] = []
-    let errorEntryNum: number
-    try {
-      doc = yaml.load(value)
-      data = doc.map((v: any, index: number) => {
-        try {
-          return validateSearchEntry(v)
-        } catch (err) {
-          errorEntryNum = index
-          throw err
-        }
-      })
-    } catch (err) {
-      if (err instanceof yaml.YAMLException) {
-        return {
-          error: {
-            message: `(line ${err.mark.line}, col ${err.mark.column}) ${err.reason}`,
-            coordinates: {
-              line: err.mark.line,
-              col: err.mark.column
-            }
-          }
-        }
-      } else if (err instanceof ValidationError) {
-        return {
-          error: {
-            message: `(entry #${errorEntryNum}) ${err.message}`,
-            entryNum: errorEntryNum
-          }
-        }
-      } else {
-        return {
-          error: { message: err?.toString() }
-        }
-      }
-    }
-    if (!_.isArray(doc)) {
-      return {
-        error: { message: 'syntax error: format should be a bullet list' }
-      }
-    }
-    return {
-      data,
-      error: { message: errors.join(', ') }
-    }
+    return parseYamlString(value)
   }, [value])
 
   const submitDisabled = !validatedList || saved
+
+  const getErrorMessage = (): string => {
+    if (!error) {
+      return ''
+    }
+    let message = ''
+    if (error.location) {
+      message += `(${error.location}) `
+    }
+    message += error.message
+    return message
+  }
+  const errorMessage = getErrorMessage()
 
   return (
     <div className='w-full'>
@@ -116,11 +68,12 @@ const YamlEditor = ({ value, onChange, onSave }: Props): ReactElement => {
         rows={numLines}
         className='code mt-1'
       />
-      {!!error?.message && <p className='error'>{error.message}</p>}
+      {!!errorMessage && <p className='error'>{errorMessage}</p>}
       <button
+        className='mt-2'
         disabled={submitDisabled}
         onClick={() => {
-          onSave(validatedList)
+          onSave(value)
           setSaved(true)
         }}
       >

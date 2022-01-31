@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { SearchEntry } from 'src/types'
 import { getBookmarks } from './bookmarks'
 import callExternal from './callExternal'
+import { parseYamlString } from './dataParser'
 import storage from './storage'
 
 const getMyList = async (): Promise<SearchEntry[]> => {
@@ -9,7 +10,13 @@ const getMyList = async (): Promise<SearchEntry[]> => {
   if (excluded) {
     return []
   }
-  return (await storage.get('myList')) || []
+  const myListString = await storage.get('myList')
+  const parseResult = parseYamlString(myListString)
+  if (parseResult.error) {
+    console.error('error parsing "my list"')
+    console.error(parseResult.error.message)
+  }
+  return parseResult.data || []
 }
 
 export const makeExternalRequests = async (): Promise<SearchEntry[]> => {

@@ -5,11 +5,9 @@ import FilterOptions from '../components/FilterOptions'
 import ExternalRequestsConfig from '../components/ExternalRequestsConfig'
 import { exportMyListCsv, exportSettingsJson } from 'src/utils/export'
 import { importMyListCsv, importSettingsJson } from 'src/utils/import'
-import { useNavigate } from 'react-router-dom'
 import useStateCached from 'src/utils/useStateCached'
 
 const Settings = (): ReactElement => {
-  const navigate = useNavigate()
   const [myListTextCached, setMyListTextCached] =
     useStateCached<string>('myList')
   const [myListText, setMyListText] = useState('')
@@ -20,21 +18,6 @@ const Settings = (): ReactElement => {
       setMyListText(myListTextCached)
     }
   }, [myListTextCached])
-
-  useEffect(() => {
-    // global event listeners
-    const onGlobalKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'p' && (e.ctrlKey || e.metaKey)) {
-        // go to home page
-        e.preventDefault()
-        navigate('/')
-      }
-    }
-    document.addEventListener('keydown', onGlobalKeyDown)
-    return () => {
-      document.removeEventListener('keydown', onGlobalKeyDown)
-    }
-  }, [])
 
   return (
     <div className='full'>

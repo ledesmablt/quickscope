@@ -42,11 +42,7 @@ const Search = (): ReactElement => {
 
   const searchList = useMemo(
     () => filterSearchList(asyncSearchList, searchInput.flags),
-    [
-      numAsyncTriggers,
-      searchInput.flags.stringContains,
-      searchInput.flags.stringEquals
-    ]
+    [numAsyncTriggers, searchInput.flags.string, searchInput.flags.array]
   )
   const fzf = useMemo(() => {
     return new Fzf(searchList, {

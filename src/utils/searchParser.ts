@@ -5,43 +5,50 @@ interface SearchParserResult {
   flags: FilterFlags
 }
 
-const regex = /([^\s:]+):([^\s]*|(["'])(?:(?=(\\?))\2.)*?\1)/g
+const regex = /([^\s:]+)(:|=)([^\s]*|(["'])(?:(?=(\\?))\2.)*?\1)/g
 // first group: property name
 // subsequent groups: property value
 // everything else: fuzzy search query
 
-const stringContainsKeys: (keyof FilterFlags['stringContains'])[] = [
+const stringKeys: (keyof FilterFlags['string'])[] = [
   'url',
   'title',
   'description',
-  'in'
+  'in',
+  'label'
 ]
-const stringEqualsKeys: (keyof FilterFlags['stringEquals'])[] = ['label']
+const arrayKeys: (keyof FilterFlags['array'])[] = ['tag', 'tags']
 
 export default (searchText: string = ''): SearchParserResult => {
   const matches = searchText.matchAll(regex) || []
   const flags: FilterFlags = {
-    stringContains: {},
-    stringEquals: {}
+    matchType: 'includes',
+    string: {},
+    array: {}
   }
   let text = searchText
   for (const match of matches) {
     const key = match?.[1]
-    let value: string = match?.[2]
+    let matchType = match?.[2]
+    let value: string = match?.[3]
 
-    if (!value || !key) {
+    if (!value || !matchType || !key) {
       continue
     }
+    if (matchType === '=') {
+      flags.matchType = 'equals'
+    }
+
     for (const q of ['"', "'"]) {
       // trim quotation marks (regex doesn't capture it in a group)
       if (value.startsWith(q) && value.endsWith(q)) {
         value = value.slice(1, value.length - 1)
       }
     }
-    if (stringContainsKeys.includes(key)) {
-      flags.stringContains[key] = value
-    } else if (stringEqualsKeys.includes(key)) {
-      flags.stringEquals[key] = value
+    if (stringKeys.includes(key)) {
+      flags.string[key] = value
+    } else if (arrayKeys.includes(key)) {
+      flags.array[key] = value
     }
     text = text.replace(match[0], '')
   }

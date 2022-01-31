@@ -12,7 +12,12 @@ export const schema: yup.SchemaOf<SearchEntry> = yup
     icon: yup.string().url().typeError('icon must be a valid url'),
     tags: yup
       .array()
-      .of(yup.string().typeError('tag item must be text'))
+      .of(
+        yup
+          .string()
+          .matches(/^((?!,).)*$/, 'tag item cannot have a comma')
+          .typeError('tag item must be text')
+      )
       .typeError('tags must be a bullet list'),
     label: yup.string().typeError('label must be text'),
     title: yup.string().typeError('title must be text'),

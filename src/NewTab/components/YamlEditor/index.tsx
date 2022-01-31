@@ -17,9 +17,18 @@ interface Props {
   value: string
   onChange: (newValue: string) => void
   onSave: (value: string) => void
+  onImport?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onExport?: VoidFunction
 }
 
-const YamlEditor = ({ value = '', onChange, onSave }: Props): ReactElement => {
+const YamlEditor = ({
+  value = '',
+  onChange,
+  onSave,
+  onImport,
+  onExport
+}: Props): ReactElement => {
+  const id = useMemo(() => _.uniqueId(), [])
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
@@ -69,16 +78,37 @@ const YamlEditor = ({ value = '', onChange, onSave }: Props): ReactElement => {
         className='code mt-1'
       />
       {!!errorMessage && <p className='error'>{errorMessage}</p>}
-      <button
-        className='mt-2'
-        disabled={submitDisabled}
-        onClick={() => {
-          onSave(value)
-          setSaved(true)
-        }}
-      >
-        {saved ? 'saved!' : 'save'}
-      </button>
+
+      <div className='flex gap-2 pt-2'>
+        <button
+          disabled={submitDisabled}
+          onClick={() => {
+            onSave(value)
+            setSaved(true)
+          }}
+        >
+          {saved ? 'saved!' : 'save'}
+        </button>
+        <button hidden={!onImport}>
+          <label className='cursor-pointer' htmlFor={`csv-import-${id}`}>
+            import
+          </label>
+          <input
+            className='hidden'
+            id={`csv-import-${id}`}
+            type='file'
+            accept='text/csv'
+            onChange={onImport}
+          />
+        </button>
+        <button
+          hidden={!onExport}
+          onClick={onExport}
+          disabled={!validatedList?.length}
+        >
+          export
+        </button>
+      </div>
     </div>
   )
 }

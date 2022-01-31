@@ -1,6 +1,9 @@
+import _ from 'lodash'
+import Papa from 'papaparse'
+import { parseYamlString } from './dataParser'
 import storage from './storage'
 
-export const downloadText = (data: string, filename: string): void => {
+export const downloadData = (data: any, filename: string): void => {
   const element = document.createElement('a')
   try {
     const file = new Blob([data])
@@ -17,5 +20,22 @@ export const downloadText = (data: string, filename: string): void => {
 
 export const exportSettingsJson = async () => {
   const allSettings = await storage.get()
-  downloadText(JSON.stringify(allSettings, null, 2), 'quickscope_settings.json')
+  downloadData(JSON.stringify(allSettings, null, 2), 'quickscope_settings.json')
+}
+
+export const exportMyListCsv = async (): Promise<void> => {
+  const myList = await storage.get('myList')
+  const parseResult = parseYamlString(myList)
+  if (!parseResult?.data?.length) {
+    if (parseResult?.error?.message) {
+      alert(`Error: ${parseResult.error.message}`)
+      return
+    }
+    alert('No data to export!')
+  }
+  const allKeys = _.uniq(parseResult.data.flatMap((d) => Object.keys(d)))
+  const result = Papa.unparse(parseResult.data, {
+    columns: allKeys
+  })
+  downloadData(result, 'quicksope_my_list.csv')
 }

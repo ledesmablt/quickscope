@@ -4,8 +4,8 @@ import storage from 'src/utils/storage'
 import YamlEditor from '../components/YamlEditor'
 import FilterOptions from '../components/FilterOptions'
 import ExternalRequestsConfig from '../components/ExternalRequestsConfig'
-import { exportSettingsJson } from 'src/utils/export'
-import { importSettingsJson } from 'src/utils/import'
+import { exportMyListCsv, exportSettingsJson } from 'src/utils/export'
+import { importMyListCsv, importSettingsJson } from 'src/utils/import'
 
 const Settings = (): ReactElement => {
   // not using useStateCached since should be valid before saving
@@ -34,6 +34,8 @@ const Settings = (): ReactElement => {
         onSave={(myListData) => {
           storage.set({ myList: myListData })
         }}
+        onImport={importMyListCsv}
+        onExport={exportMyListCsv}
       />
 
       <div className='p-4' />
@@ -57,7 +59,7 @@ const Settings = (): ReactElement => {
           id='import-settings'
           type='file'
           accept='application/JSON'
-          onChange={(e) => importSettingsJson(e)}
+          onChange={importSettingsJson}
         />
         <button onClick={() => exportSettingsJson()}>export settings</button>
       </div>

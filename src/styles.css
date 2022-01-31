@@ -26,7 +26,7 @@ p.success {
 }
 
 button {
-  @apply p-1 w-16 border rounded hover:bg-gray-100 
+  @apply p-1 min-w-[4rem] border rounded hover:bg-gray-100 
 }
 
 button:disabled {

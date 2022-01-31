@@ -14,8 +14,11 @@ export default {
   set: async (body: Partial<LocalStorage>): Promise<void> => {
     await chrome.storage.local.set(body)
   },
-  get: async <T = any>(key: keyof LocalStorage): Promise<T> => {
+  get: async (key?: keyof LocalStorage): Promise<any> => {
     const result = await chrome.storage.local.get(key)
+    if (!key) {
+      return result
+    }
     return result?.[key]
   },
   remove: async (

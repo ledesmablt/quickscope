@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState
 } from 'react'
+import getKeyAction from 'src/utils/getKeyAction'
 import { filterSearchList } from 'src/utils/list'
 import searchParser from 'src/utils/searchParser'
 import useAsyncSearchList from 'src/utils/useAsyncSearchList'
@@ -94,16 +95,16 @@ const Search = (): ReactElement => {
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     setDisableMouseSelect(true)
-    const ctrlPressed = e.ctrlKey || e.metaKey
-    if (e.key === 'ArrowDown' || (e.key === 'j' && ctrlPressed)) {
+
+    const keyAction = getKeyAction(e)
+
+    if (keyAction === 'down') {
+      // go down 1
       e.preventDefault()
-      if (!selectedRef.current.nextElementSibling) {
+      if (!selectedRef?.current?.nextElementSibling) {
         return
       }
-
-      // increment
-      setSelectedIndex(Math.min(selectedIndex + 1, results.length - 1))
-
+      setSelectedIndex(Math.min(selectedIndex + 1, results.length - 1)) // increment
       // check for out of bounds
       const selectedBottom =
         selectedRef.current.getBoundingClientRect().bottom +
@@ -112,17 +113,15 @@ const Search = (): ReactElement => {
       const containerBottom =
         containerRef.current.getBoundingClientRect().bottom
       if (selectedBottom > containerBottom) {
-        selectedRef.current.nextElementSibling?.scrollIntoView(false)
+        selectedRef.current.nextElementSibling.scrollIntoView(false)
       }
-    } else if (e.key === 'ArrowUp' || (e.key === 'k' && ctrlPressed)) {
+    } else if (keyAction === 'up') {
+      // go up 1
       e.preventDefault()
-      if (!selectedRef.current.previousElementSibling) {
+      if (!selectedRef?.current?.previousElementSibling) {
         return
       }
-
-      // decrement
-      setSelectedIndex((i) => Math.max(i - 1, 0))
-
+      setSelectedIndex((i) => Math.max(i - 1, 0)) // decrement
       // check for out of bounds
       const aboveTop =
         selectedRef.current.previousElementSibling.getBoundingClientRect().top +
@@ -132,12 +131,29 @@ const Search = (): ReactElement => {
       if (aboveTop < containerTop) {
         selectedRef.current.previousElementSibling.scrollIntoView(true)
       }
+    } else if (keyAction === 'bottom') {
+      // go to bottom
+      e.preventDefault()
+      if (!resultsContainerRef.current.lastElementChild) {
+        return
+      }
+      setSelectedIndex(results.length - 1) // set to max
+      resultsContainerRef.current.lastElementChild.scrollIntoView(false)
+    } else if (keyAction === 'top') {
+      // go to top
+      e.preventDefault()
+      if (!resultsContainerRef.current.firstElementChild) {
+        return
+      }
+      setSelectedIndex(0) // set to min
+      resultsContainerRef.current.firstElementChild.scrollIntoView(true)
     } else if (e.key === 'Enter') {
+      // launch
       e.preventDefault()
       if (!selectedResult) {
         return
       }
-      onLaunch(selectedResult.url, { newTab: ctrlPressed })
+      onLaunch(selectedResult.url, { newTab: e.ctrlKey || e.metaKey })
     }
   }
 

@@ -1,4 +1,5 @@
 import { extendedMatch, Fzf } from 'fzf'
+import { useNavigate } from 'react-router-dom'
 import React, {
   ReactElement,
   useEffect,
@@ -27,6 +28,7 @@ const onLaunch = (url: string, options?: OnLaunchOptions) => {
 const LIMIT = 100
 
 const Search = (): ReactElement => {
+  const navigate = useNavigate()
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const resultsContainerRef = useRef<HTMLDivElement>(null)
@@ -85,6 +87,10 @@ const Search = (): ReactElement => {
           e.preventDefault()
           inputRef?.current?.focus()
         }
+      } else if (e.key === 'p' && (e.ctrlKey || e.metaKey)) {
+        // go to settings page
+        e.preventDefault()
+        navigate('/settings')
       }
     }
     document.addEventListener('keydown', onGlobalKeyDown)

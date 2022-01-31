@@ -6,8 +6,10 @@ import FilterOptions from '../components/FilterOptions'
 import ExternalRequestsConfig from '../components/ExternalRequestsConfig'
 import { exportMyListCsv, exportSettingsJson } from 'src/utils/export'
 import { importMyListCsv, importSettingsJson } from 'src/utils/import'
+import { useNavigate } from 'react-router-dom'
 
 const Settings = (): ReactElement => {
+  const navigate = useNavigate()
   // not using useStateCached since should be valid before saving
   const [myListText, setMyListText] = useState('')
 
@@ -15,6 +17,21 @@ const Settings = (): ReactElement => {
     storage.get('myList').then((data) => {
       setMyListText(data)
     })
+  }, [])
+
+  useEffect(() => {
+    // global event listeners
+    const onGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'p' && (e.ctrlKey || e.metaKey)) {
+        // go to home page
+        e.preventDefault()
+        navigate('/')
+      }
+    }
+    document.addEventListener('keydown', onGlobalKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onGlobalKeyDown)
+    }
   }, [])
 
   return (

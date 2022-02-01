@@ -14,6 +14,9 @@ import useAsyncSearchList from 'src/utils/useAsyncSearchList'
 import useDebounce from 'src/utils/useDebounce'
 import SearchItem from '../SearchItem'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+
 interface OnLaunchOptions {
   newTab?: boolean
 }
@@ -40,8 +43,11 @@ const Search = (): ReactElement => {
   const searchInput = useMemo(() => searchParser(searchText), [searchText])
   const debouncedSearchInput = useDebounce(searchInput)
 
-  const { searchList: asyncSearchList, numTriggers: numAsyncTriggers } =
-    useAsyncSearchList(debouncedSearchInput.searchText)
+  const {
+    searchList: asyncSearchList,
+    loading,
+    numTriggers: numAsyncTriggers
+  } = useAsyncSearchList(debouncedSearchInput.searchText)
 
   const searchList = useMemo(
     () => filterSearchList(asyncSearchList, searchInput.flags),
@@ -164,60 +170,73 @@ const Search = (): ReactElement => {
   }
 
   return (
-    <div
-      ref={containerRef}
-      tabIndex={0}
-      className='flex flex-col text-3xl grow max-h-[95%]'
-      onFocus={() => {
-        inputRef?.current?.focus()
-      }}
-      onKeyDown={onKeyDown}
-    >
-      <input
-        ref={inputRef}
-        type='text'
-        className='border rounded-t p-2 w-md'
-        placeholder='Search'
-        spellCheck={false}
-        autoComplete={'off'}
-        value={searchText}
-        onChange={(e) => {
-          setSearchText(e.target.value)
+    <>
+      <div className='flex justify-between items-end pb-[6px] px-[2px] text-sm'>
+        <p>quickscope</p>
+        {searchText && loading && (
+          <FontAwesomeIcon
+            className='text-gray-400'
+            icon={faCircleNotch}
+            spin
+            size='sm'
+          />
+        )}
+      </div>
+      <div
+        ref={containerRef}
+        tabIndex={0}
+        className='flex flex-col text-3xl grow max-h-[95%]'
+        onFocus={() => {
+          inputRef?.current?.focus()
         }}
-      />
-      {!!results.length && (
-        <div
-          ref={resultsContainerRef}
-          className='flex flex-col grow border text-gray-400 gap-1 overflow-y-auto'
-          onMouseMove={() => {
-            setDisableMouseSelect(false)
+        onKeyDown={onKeyDown}
+      >
+        <input
+          ref={inputRef}
+          type='text'
+          className='border rounded-t p-2 w-md'
+          placeholder='Search'
+          spellCheck={false}
+          autoComplete={'off'}
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value)
           }}
-        >
-          {results.map((result, index) => {
-            const isSelected = selectedIndex === index
-            const searchEntry = result.item
-            return (
-              <div
-                ref={index === selectedIndex ? selectedRef : null}
-                key={index}
-                className={`cursor-pointer px-2 py-1 ${
-                  isSelected ? 'bg-gray-100 text-gray-600' : ''
-                }`}
-                onMouseEnter={() => {
-                  if (disableMouseEvent) {
-                    return
-                  }
-                  setSelectedIndex(index)
-                  inputRef?.current?.focus()
-                }}
-              >
-                <SearchItem searchEntry={searchEntry} />
-              </div>
-            )
-          })}
-        </div>
-      )}
-    </div>
+        />
+        {!!results.length && (
+          <div
+            ref={resultsContainerRef}
+            className='flex flex-col grow border text-gray-400 gap-1 overflow-y-auto'
+            onMouseMove={() => {
+              setDisableMouseSelect(false)
+            }}
+          >
+            {results.map((result, index) => {
+              const isSelected = selectedIndex === index
+              const searchEntry = result.item
+              return (
+                <div
+                  ref={index === selectedIndex ? selectedRef : null}
+                  key={index}
+                  className={`cursor-pointer px-2 py-1 ${
+                    isSelected ? 'bg-gray-100 text-gray-600' : ''
+                  }`}
+                  onMouseEnter={() => {
+                    if (disableMouseEvent) {
+                      return
+                    }
+                    setSelectedIndex(index)
+                    inputRef?.current?.focus()
+                  }}
+                >
+                  <SearchItem searchEntry={searchEntry} />
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    </>
   )
 }
 export default Search

@@ -2,7 +2,6 @@ import _ from 'lodash'
 import yaml from 'js-yaml'
 import Papa from 'papaparse'
 import { SearchEntry } from 'src/types'
-import storage from './storage'
 import validateSearchEntry from './validateSearchEntry'
 
 export const fileUploadToString = async (
@@ -31,7 +30,8 @@ export const fileUploadToString = async (
 }
 
 export const importSettingsJson = async (
-  e: React.ChangeEvent<HTMLInputElement>
+  e: React.ChangeEvent<HTMLInputElement>,
+  updateStorage: (body: any) => void
 ) => {
   const string = await fileUploadToString(e)
   const res = JSON.parse(string)
@@ -41,10 +41,8 @@ export const importSettingsJson = async (
   if (!approved) {
     return
   }
-  await storage.clear()
-  storage.set(res)
+  updateStorage(res)
   alert('Settings successfully imported')
-  window.location.reload()
 }
 
 export const importSearchEntriesCsv = async (
@@ -75,11 +73,13 @@ export const importSearchEntriesCsv = async (
     return formattedResult
   } catch (err: any) {
     alert('Error :' + err?.message || err?.toString())
+    throw err
   }
 }
 
 export const importMyListCsv = async (
-  e: React.ChangeEvent<HTMLInputElement>
+  e: React.ChangeEvent<HTMLInputElement>,
+  updateMyList: (value: string) => void
 ) => {
   const result = await importSearchEntriesCsv(e)
   const approved = confirm(
@@ -88,9 +88,6 @@ export const importMyListCsv = async (
   if (!approved) {
     return
   }
-  await storage.set({
-    myList: yaml.dump(result, { skipInvalid: true })
-  })
+  updateMyList(yaml.dump(result, { skipInvalid: true }))
   alert('Import successful')
-  window.location.reload()
 }

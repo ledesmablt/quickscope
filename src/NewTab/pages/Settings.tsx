@@ -38,7 +38,7 @@ const Settings = (): ReactElement => {
         value={myListText}
         onChange={setMyListText}
         onSave={setMyListTextCached}
-        onImport={importMyListCsv}
+        onImport={(e) => importMyListCsv(e, setMyListTextCached)}
         onExport={exportMyListCsv}
       />
 
@@ -63,7 +63,7 @@ const Settings = (): ReactElement => {
           id='import-settings'
           type='file'
           accept='application/JSON'
-          onChange={importSettingsJson}
+          onChange={(e) => importSettingsJson(e, useStore.setState)}
         />
         <button onClick={() => exportSettingsJson()}>export settings</button>
       </div>

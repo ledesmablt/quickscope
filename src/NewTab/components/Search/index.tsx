@@ -179,6 +179,7 @@ const Search = (): ReactElement => {
         className='border rounded-t p-2 w-md'
         placeholder='Search'
         spellCheck={false}
+        autoComplete={'off'}
         value={searchText}
         onChange={(e) => {
           setSearchText(e.target.value)

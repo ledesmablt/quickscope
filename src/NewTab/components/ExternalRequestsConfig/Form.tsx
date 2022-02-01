@@ -134,14 +134,17 @@ const Form = ({
   const title = isNew ? `${formValues.name} (unsaved)` : formValues.name
 
   return (
-    <Accordion title={<p className='underline'>{title}</p>} defaultOpen={isNew}>
+    <Accordion
+      title={<p className='underline'>{title || '(no name)'}</p>}
+      defaultOpen={isNew}
+    >
       <div className='w-full pt-4 flex flex-col gap-1 items-start'>
         <label htmlFor={`form-${id}-name`}>name</label>
         <input
           id={`form-${id}-name`}
-          className='border rouded p-1'
           type='text'
           spellCheck={false}
+          autoComplete={'off'}
           value={formValues.name}
           onChange={(e) => {
             setFormValues({
@@ -157,9 +160,9 @@ const Form = ({
         </label>
         <input
           id={`form-${id}-label`}
-          className='border rounded p-1'
           type='text'
           spellCheck={false}
+          autoComplete={'off'}
           value={formValues.label}
           onChange={(e) => {
             setFormValues({
@@ -174,9 +177,9 @@ const Form = ({
         </label>
         <input
           id={`form-${id}-pathToData`}
-          className='border rounded p-1'
           type='text'
           spellCheck={false}
+          autoComplete={'off'}
           value={formValues.pathToData}
           onChange={(e) => {
             setFormValues({

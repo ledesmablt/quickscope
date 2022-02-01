@@ -3,8 +3,6 @@
 import { CallExternalOptions } from './callExternal'
 
 export interface LocalStorage {
-  searchText?: string
-  asyncSearchList?: string[]
   myList?: string
   'options.filter.excludeList'?: Record<string, boolean>
   'options.list.callExternalConfigs'?: CallExternalOptions[]

@@ -1,13 +1,16 @@
 import React, { ReactElement } from 'react'
-import useStateCached from 'src/utils/useStateCached'
+import useStore from 'src/utils/useStore'
 
 // TODO: make this more robust
 const options = ['bookmarks', 'my list']
 
 const FilterOptions = (): ReactElement => {
-  const [excludeList, setExcludeList] = useStateCached<Record<string, boolean>>(
-    'options.filter.excludeList'
-  )
+  const { 'options.filter.excludeList': excludeList } = useStore()
+  const setExcludeList = (value: Record<string, boolean>) => {
+    useStore.setState({
+      'options.filter.excludeList': value
+    })
+  }
 
   return (
     <div>

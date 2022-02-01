@@ -1,12 +1,16 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 import { CallExternalOptions } from 'src/utils/callExternal'
-import useStateCached from 'src/utils/useStateCached'
+import useStore, { Store } from 'src/utils/useStore'
 import Form, { formatAsStrings, newOptionDefault } from './Form'
 
 const ExternalRequestsConfig = (): ReactElement => {
-  const [cachedOptions, saveCachedOptions] = useStateCached<
-    CallExternalOptions[]
-  >('options.list.callExternalConfigs')
+  const { 'options.list.callExternalConfigs': cachedOptions } = useStore()
+  const saveCachedOptions = (
+    value: Store['options.list.callExternalConfigs']
+  ) =>
+    useStore.setState({
+      'options.list.callExternalConfigs': value
+    })
 
   const [options, setOptions] = useState(
     (cachedOptions || []).map(formatAsStrings)

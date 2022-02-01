@@ -5,12 +5,16 @@ import FilterOptions from '../components/FilterOptions'
 import ExternalRequestsConfig from '../components/ExternalRequestsConfig'
 import { exportMyListCsv, exportSettingsJson } from 'src/utils/export'
 import { importMyListCsv, importSettingsJson } from 'src/utils/import'
-import useStateCached from 'src/utils/useStateCached'
+import useStore from 'src/utils/useStore'
 
 const Settings = (): ReactElement => {
-  const [myListTextCached, setMyListTextCached] =
-    useStateCached<string>('myList')
-  const [myListText, setMyListText] = useState('')
+  const { myList: myListTextCached } = useStore()
+  const setMyListTextCached = (value: string) => {
+    useStore.setState({
+      myList: value.trim()
+    })
+  }
+  const [myListText, setMyListText] = useState(myListTextCached || '')
 
   useEffect(() => {
     // override on state changes

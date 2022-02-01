@@ -14,14 +14,14 @@ export interface ParseResult {
 }
 
 export const parseYamlString = (value: string): ParseResult => {
-  if (!value) {
+  if (!value || typeof value !== 'string') {
     return {}
   }
   let doc: any
   let data: SearchEntry[]
   let errorEntryNum: number
   try {
-    doc = yaml.load(value)
+    doc = yaml.load(value.trim())
     if (!_.isArray(doc)) {
       return {
         error: { message: 'format error: format should be a bullet list' }

@@ -1,7 +1,5 @@
 import React, { ReactElement, useEffect, useMemo, useState } from 'react'
-import yaml from 'js-yaml'
 import _ from 'lodash'
-import storage from 'src/utils/storage'
 import { parseYamlString } from 'src/utils/dataParser'
 
 const placeholderText = `# example
@@ -30,12 +28,6 @@ const YamlEditor = ({
 }: Props): ReactElement => {
   const id = useMemo(() => _.uniqueId(), [])
   const [saved, setSaved] = useState(false)
-
-  useEffect(() => {
-    storage.get('myList').then((data) => {
-      onChange(yaml.dump(data, { skipInvalid: true }))
-    })
-  }, [])
 
   useEffect(() => {
     setSaved(false)

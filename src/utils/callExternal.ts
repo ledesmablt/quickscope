@@ -24,7 +24,7 @@ export default async ({
   let arrayData = response?.data
   if (pathToData) {
     const getProperty = _.property(pathToData)
-    arrayData = getProperty(response)
+    arrayData = getProperty(arrayData)
   }
   if (!_.isArray(arrayData)) {
     throw new Error(`${pathToData} must be an array, got ${typeof arrayData}`)

@@ -2,8 +2,10 @@ import { SearchEntry } from 'src/types'
 import storage from './storage'
 
 export const getBookmarks = async () => {
-  const excluded = (await storage.get('options.filter.excludeList'))?.bookmarks
-  if (excluded) {
+  const included = (await storage.get('filterOptions_includeLists'))?.includes(
+    'bookmarks'
+  )
+  if (!included) {
     return []
   }
   const tree = await chrome.bookmarks.getTree()

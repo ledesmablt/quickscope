@@ -4,8 +4,8 @@ import { CallExternalOptions } from './callExternal'
 
 export interface LocalStorage {
   myList?: string
-  'options.filter.excludeList'?: Record<string, boolean>
-  'options.list.callExternalConfigs'?: CallExternalOptions[]
+  externalRequestsConfig?: CallExternalOptions[]
+  filterOptions_includeLists?: string[]
 }
 
 export default {

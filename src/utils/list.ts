@@ -6,8 +6,10 @@ import { parseYamlString } from './dataParser'
 import storage from './storage'
 
 const getMyList = async (): Promise<SearchEntry[]> => {
-  const excluded = (await storage.get('options.filter.excludeList'))?.myList
-  if (excluded) {
+  const included = (await storage.get('filterOptions_includeLists'))?.includes(
+    'my list'
+  )
+  if (!included) {
     return []
   }
   const myListString = await storage.get('myList')
@@ -21,7 +23,7 @@ const getMyList = async (): Promise<SearchEntry[]> => {
 
 export const makeExternalRequests = async (): Promise<SearchEntry[]> => {
   const externalConfigs: CallExternalOptions[] = await storage.get(
-    'options.list.callExternalConfigs'
+    'externalRequestsConfig'
   )
   if (!_.isArray(externalConfigs)) {
     return []

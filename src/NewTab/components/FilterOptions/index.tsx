@@ -1,14 +1,12 @@
 import React, { ReactElement } from 'react'
 import useStore from 'src/utils/useStore'
-
-// TODO: make this more robust
-const options = ['bookmarks', 'my list']
+import { FILTER_LIST_OPTIONS } from 'src/constants'
 
 const FilterOptions = (): ReactElement => {
-  const { 'options.filter.excludeList': excludeList } = useStore()
-  const setExcludeList = (value: Record<string, boolean>) => {
+  const { filterOptions_includeLists: includeLists } = useStore()
+  const setIncludeLists = (value: string[]) => {
     useStore.setState({
-      'options.filter.excludeList': value
+      filterOptions_includeLists: value
     })
   }
 
@@ -19,9 +17,9 @@ const FilterOptions = (): ReactElement => {
       </p>
       <p>include lists in search results:</p>
       <div className='flex flex-col gap-1 mt-2'>
-        {options.map((option) => {
+        {FILTER_LIST_OPTIONS.map((option) => {
           const id = `filteroption-${option}`
-          const checked = !excludeList?.[option]
+          const checked = includeLists.includes(option)
           return (
             <div key={id} className='flex items-center'>
               <input
@@ -30,17 +28,11 @@ const FilterOptions = (): ReactElement => {
                 checked={checked}
                 onChange={() => {
                   if (checked) {
-                    // add
-                    setExcludeList({
-                      ...(excludeList || {}),
-                      [option]: true
-                    })
-                  } else {
                     // remove
-                    setExcludeList({
-                      ...(excludeList || {}),
-                      [option]: false
-                    })
+                    setIncludeLists(includeLists.filter((v) => v !== option))
+                  } else {
+                    // add
+                    setIncludeLists([...includeLists, option])
                   }
                 }}
                 className='mr-2'

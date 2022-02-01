@@ -28,7 +28,7 @@ export default (searchText: string = ''): AsyncSearchListResult => {
     // attach listeners
     const storageListener = (changes: LocalStorage) => {
       // reload on change
-      const updateKeys: (keyof LocalStorage)[] = ['options.filter.excludeList']
+      const updateKeys: (keyof LocalStorage)[] = ['filterOptions_includeLists']
       for (const key of updateKeys) {
         if (changes[key]) {
           setNumReloads((n) => n + 1)

@@ -4,12 +4,12 @@ import callExternal, { CallExternalOptions } from 'src/utils/callExternal'
 import Accordion from '../Accordion'
 
 interface FormValues {
-  requestConfig?: string
-  transformMap?: string
-  pathToData?: string // _.property
-  label?: string
-  enabled?: boolean
-  name?: string
+  requestConfig: string
+  transformMap: string
+  pathToData: string
+  label: string
+  enabled: boolean
+  name: string
 }
 
 export const newOptionDefault: FormValues = {
@@ -23,12 +23,14 @@ export const newOptionDefault: FormValues = {
   "url": "path.to.url",
   "title": "path.to.title"
 }`,
+  pathToData: '',
+  label: '',
   name: 'New Request Config',
   enabled: true
 }
 
 export const formatAsStrings = (options: CallExternalOptions): FormValues => {
-  const formattedValues: FormValues = {}
+  const formattedValues: Partial<FormValues> = {}
   for (const [key, value] of Object.entries(options)) {
     if (_.isObjectLike(value)) {
       formattedValues[key] = JSON.stringify(value, null, 2)
@@ -36,7 +38,7 @@ export const formatAsStrings = (options: CallExternalOptions): FormValues => {
       formattedValues[key] = value
     }
   }
-  return formattedValues
+  return formattedValues as FormValues
 }
 
 export const formatAsOptions = (
@@ -84,7 +86,7 @@ const Form = ({
   const [testStatus, setTestStatus] = useState<TestStatus>({})
   const [isSaved, setIsSaved] = useState(true)
 
-  const errors: FormValues = {
+  const errors: Partial<FormValues> = {
     name: !formValues.name && 'name is required',
     transformMap: attemptJSONParse(formValues.transformMap),
     requestConfig: attemptJSONParse(formValues.requestConfig)
@@ -100,8 +102,9 @@ const Form = ({
       loading: true
     })
     const options = formatAsOptions(formValues)
+
     try {
-      const result = await callExternal(options)
+      const result = await callExternal(options, 'test')
       console.log(`test result - ${formValues.name}`, result)
       setTestStatus({
         ok: true

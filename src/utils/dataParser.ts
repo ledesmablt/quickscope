@@ -21,7 +21,7 @@ export const parseYamlString = (value: string): ParseResult => {
   let data: SearchEntry[]
   let errorEntryNum: number
   try {
-    doc = yaml.load(value.trim())
+    doc = yaml.load(value)
     if (!_.isArray(doc)) {
       return {
         error: { message: 'format error: format should be a bullet list' }

@@ -5,7 +5,7 @@ interface SearchParserResult {
   flags: FilterFlags
 }
 
-const regex = /([^\s:]+)(:|=)([^\s]*|(["'])(?:(?=(\\?))\2.)*?\1)/g
+const regex = /([^\s!:=]+)(!?)(:|=)((?:'|").*(?:'|")|[^\s]+)/g
 // first group: property name
 // second group: match operator
 // subsequent groups: property value
@@ -21,16 +21,16 @@ const stringKeys: (keyof FilterFlags['string'])[] = [
 const arrayKeys: (keyof FilterFlags['array'])[] = ['tag', 'tags']
 
 export default (searchText: string = ''): SearchParserResult => {
-  const matches = searchText.matchAll(regex) || []
+  const matches = searchText.matchAll(regex)
   const flags: FilterFlags = {
     string: {},
     array: {}
   }
   let text = searchText
   for (const match of matches) {
-    const key = match?.[1]
-    let matchOperator = match?.[2]
-    let value: string = match?.[3]
+    type MatchGroup = [string, any, string, string, string]
+    let [allMatched, key, notOperator, matchOperator, value] =
+      match as MatchGroup
 
     if (!value || !matchOperator || !key) {
       continue
@@ -50,15 +50,17 @@ export default (searchText: string = ''): SearchParserResult => {
     if (stringKeys.includes(key)) {
       flags.string[key] = {
         text: value,
-        matchType
+        matchType,
+        inverse: !!notOperator
       }
     } else if (arrayKeys.includes(key)) {
       flags.array[key] = {
         text: value,
-        matchType
+        matchType,
+        inverse: !!notOperator
       }
     }
-    text = text.replace(match[0], '')
+    text = text.replace(allMatched, '')
   }
   return {
     searchText: text.trim() || ' ',

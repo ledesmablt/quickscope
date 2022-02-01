@@ -66,6 +66,7 @@ export const buildSearchableList = async (
 export interface FieldMatchOptions {
   text: string
   matchType: 'includes' | 'equals'
+  inverse?: boolean
 }
 
 export interface FilterFlags {
@@ -99,40 +100,47 @@ export const filterSearchList = (
     searchList = searchList.filter((searchEntry) => {
       // searchEntry url must contain stringContains.url, and so on
       return Object.entries(filterFlags.string).every(([key, value]) => {
+        const { text, matchType, inverse } = value
         const entryKey = filterPropMap[key] || key
         const entryValue: string = searchEntry[entryKey]
         if (!entryValue) {
           return false
         }
-        const { text, matchType } = value
+        let result: boolean
         if (matchType === 'equals') {
-          return entryValue.toLowerCase() === text.toLowerCase()
+          result = entryValue.toLowerCase() === text.toLowerCase()
         } else if (matchType === 'includes') {
-          return entryValue.toLowerCase().search(text.toLowerCase()) >= 0
+          result = entryValue.toLowerCase().search(text.toLowerCase()) >= 0
         } else {
           throw new Error('invalid match type')
         }
+        return inverse ? !result : result
       })
     })
   }
   if (Object.keys(filterFlags.array).length) {
     searchList = searchList.filter((searchEntry) => {
       return Object.entries(filterFlags.array).every(([key, value]) => {
+        const { text, matchType, inverse } = value
         const entryKey = filterPropMap[key] || key
         const entryValue: string[] = searchEntry[entryKey]
         if (!_.isArray(entryValue) || !entryValue?.length) {
-          return false
+          // no tags
+          return inverse
         }
-        const { text, matchType } = value
+        let result: boolean
         if (matchType === 'equals') {
-          return entryValue.find((v) => v.toLowerCase() === text.toLowerCase())
+          result = !!entryValue.find(
+            (v) => v.toLowerCase() === text.toLowerCase()
+          )
         } else if (matchType === 'includes') {
-          return entryValue.find(
+          result = !!entryValue.find(
             (v) => v.toLowerCase().search(text.toLowerCase()) >= 0
           )
         } else {
           throw new Error('invalid match type')
         }
+        return inverse ? !result : result
       })
     })
   }

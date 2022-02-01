@@ -11,7 +11,7 @@ const Settings = (): ReactElement => {
   const { myList: myListTextCached } = useStore()
   const setMyListTextCached = (value: string) => {
     useStore.setState({
-      myList: value.trim()
+      myList: value
     })
   }
   const [myListText, setMyListText] = useState(myListTextCached || '')

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { SearchEntry } from 'src/types'
-import { buildSearchableList, buildStaticList } from './list'
-import { LocalStorage } from './storage'
+import { groupRequests, IGroupRequests } from './list'
+import useSearchableList from './useSearchableList'
+import useStaticList from './useStaticList'
+import useStore from './useStore'
 
 interface AsyncSearchListResult {
   searchList: SearchEntry[]
@@ -9,76 +11,58 @@ interface AsyncSearchListResult {
   loading: boolean
 }
 export default (searchText: string = ''): AsyncSearchListResult => {
-  // loading
-  const [staticLoading, setStaticLoading] = useState(true)
-  const [searchableLoading, setSearchableLoading] = useState(true)
-
-  const [numStaticTriggers, setNumStaticTriggers] = useState(0)
-  const [numSearchableTriggers, setNumSearchableTriggers] = useState(0)
-
-  // lists
-  const [searchList, setSearchList] = useState<SearchEntry[]>([])
-  const [staticList, setStaticList] = useState<SearchEntry[]>([])
-  const [searchableList, setSearchableList] = useState<SearchEntry[]>([])
-
   const [numTriggers, setNumTriggers] = useState(0)
-  const [numReloads, setNumReloads] = useState(0)
+
+  const { filterOptions_includeLists, externalRequestsConfig } = useStore()
+
+  const [groupedRequests, setGroupedRequests] = useState<IGroupRequests>({
+    static: [],
+    searchable: []
+  })
+  useEffect(() => {
+    if (externalRequestsConfig) {
+      setGroupedRequests(groupRequests(externalRequestsConfig))
+    }
+  }, [externalRequestsConfig])
+
+  const {
+    data: staticList,
+    loading: staticLoading,
+    refetch: refetchStatic
+  } = useStaticList({
+    callExternalOptions: groupedRequests.static
+  })
+
+  const {
+    data: searchableList,
+    loading: searchableLoading,
+    refetch: refetchSearchable
+  } = useSearchableList({
+    callExternalOptions: groupedRequests.searchable,
+    searchText
+  })
 
   useEffect(() => {
-    // attach listeners
-    const storageListener = (changes: LocalStorage) => {
-      // reload on change
-      const updateKeys: (keyof LocalStorage)[] = ['filterOptions_includeLists']
-      for (const key of updateKeys) {
-        if (changes[key]) {
-          setNumReloads((n) => n + 1)
-          break
-        }
-      }
+    // reload if includeLists updated
+    if (!filterOptions_includeLists) {
+      return
     }
-    chrome.storage.onChanged.addListener(storageListener)
-    return () => {
-      chrome.storage.onChanged.removeListener(storageListener)
-    }
-  }, [])
+    refetchStatic()
+    refetchSearchable()
+  }, [filterOptions_includeLists])
 
   useEffect(() => {
-    // load static
-    const effect = async () => {
-      setStaticList(await buildStaticList())
-      setStaticLoading(false)
-      setNumStaticTriggers((n) => n + 1)
-    }
-    effect()
-  }, [numReloads])
-
-  useEffect(() => {
-    // load searchable list
-    const effect = async () => {
-      setSearchableLoading(true)
-      const newSearchList = await buildSearchableList(searchText)
-      if (newSearchList?.length) {
-        setSearchableList(newSearchList)
-        setNumSearchableTriggers((n) => n + 1)
-      }
-      setSearchableLoading(false)
-    }
-    effect()
-  }, [searchText, numReloads])
-
-  useEffect(() => {
+    // increment numTriggers when both lists finish loading
     if (staticLoading && searchableLoading) {
       return
     }
-    const combinedList = [...staticList, ...searchableList]
-    if (combinedList.length) {
-      setSearchList(combinedList)
+    if (staticList.length + searchableList.length) {
       setNumTriggers((n) => n + 1)
     }
-  }, [numStaticTriggers, numSearchableTriggers])
+  }, [staticLoading, searchableLoading])
 
   return {
-    searchList,
+    searchList: [...staticList, ...searchableList],
     loading: staticLoading || searchableLoading,
     numTriggers
   }

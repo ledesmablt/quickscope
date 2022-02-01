@@ -12,6 +12,7 @@ const initDefaults: LocalStorage = {
 
 export interface Store extends LocalStorage {
   init: () => Promise<void>
+  initialized: boolean
 }
 
 const useStore = create<Store>((set) => {
@@ -38,7 +39,11 @@ const useStore = create<Store>((set) => {
       }
       // update store
       set(storageContent)
-    }
+      set({
+        initialized: true
+      })
+    },
+    initialized: false
   }
 })
 

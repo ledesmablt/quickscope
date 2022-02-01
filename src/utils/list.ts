@@ -1,7 +1,10 @@
 import _ from 'lodash'
 import { SearchEntry } from 'src/types'
 import { getBookmarks } from './bookmarks'
-import callExternal, { CallExternalOptions } from './callExternal'
+import callExternal, {
+  CallExternalOptions,
+  interpolateRegex
+} from './callExternal'
 import { parseYamlString } from './dataParser'
 import storage from './storage'
 
@@ -21,46 +24,70 @@ const getMyList = async (): Promise<SearchEntry[]> => {
   return parseResult.data || []
 }
 
-export const makeExternalRequests = async (): Promise<SearchEntry[]> => {
-  const externalConfigs: CallExternalOptions[] = await storage.get(
-    'externalRequestsConfig'
-  )
+export interface IGroupRequests {
+  static: CallExternalOptions[]
+  searchable: CallExternalOptions[]
+}
+export const groupRequests = (
+  externalConfigs: CallExternalOptions[]
+): IGroupRequests => {
+  const result: IGroupRequests = { static: [], searchable: [] }
   if (!_.isArray(externalConfigs)) {
-    return []
+    return result
   }
+  // split into static / searchable
+  for (const config of externalConfigs) {
+    if (!config.enabled) {
+      continue
+    }
+    const isSearchable =
+      JSON.stringify(config.requestConfig).search(interpolateRegex) >= 0
+    if (isSearchable) {
+      result.searchable.push(config)
+    } else {
+      result.static.push(config)
+    }
+  }
+  return result
+}
+
+export const makeExternalRequests = async (
+  externalConfigs: CallExternalOptions[],
+  searchText?: string
+): Promise<SearchEntry[]> => {
   return _.flatten(
     await Promise.all(
-      externalConfigs
-        .filter((c) => c.enabled)
-        .map(async (externalConfig) => {
-          try {
-            const data = await callExternal(externalConfig)
-            return data
-          } catch (err) {
-            console.error(err)
-            return []
-          }
-        })
+      externalConfigs.map(async (externalConfig) => {
+        try {
+          const data = await callExternal(externalConfig, searchText)
+          return data
+        } catch (err) {
+          console.error(err)
+          return []
+        }
+      })
     )
   )
 }
 
 // builds only on page load
-export const buildStaticList = async () => {
-  // DO NOT COMMIT
+export const buildStaticList = async (
+  externalConfigs: CallExternalOptions[]
+) => {
   const [myList, bookmarks, externalRequests] = await Promise.all([
     getMyList(),
     getBookmarks(),
-    makeExternalRequests()
+    makeExternalRequests(externalConfigs)
   ])
   return [...myList, ...bookmarks, ...externalRequests]
 }
 
 // searchable - useful for API calls expecting frequently changing output
 export const buildSearchableList = async (
+  externalConfigs: CallExternalOptions[],
   searchText: string
 ): Promise<SearchEntry[]> => {
-  return []
+  return await makeExternalRequests(externalConfigs, searchText)
 }
 
 export interface FieldMatchOptions {

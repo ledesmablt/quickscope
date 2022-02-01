@@ -45,7 +45,7 @@ const ExternalRequestsConfig = (): ReactElement => {
   }
 
   return (
-    <div className='flex flex-col items-start gap-4 py-2'>
+    <div className='flex flex-col items-start gap-4 pt-2'>
       {options?.map((option, index) => {
         return (
           <Form
@@ -61,9 +61,7 @@ const ExternalRequestsConfig = (): ReactElement => {
           />
         )
       })}
-      <button className='mt-2' onClick={onAdd}>
-        add new
-      </button>
+      <button onClick={onAdd}>add new</button>
     </div>
   )
 }

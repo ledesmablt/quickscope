@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import { addToMyList } from './utils/lists/myList'
 
 chrome.runtime.onMessage.addListener(async (message) => {
   // logging
@@ -13,9 +14,9 @@ chrome.contextMenus.create({
   id: _.uniqueId(),
   title: 'Save to quickscope'
 })
-
-chrome.contextMenus.onClicked.addListener((event, tab) => {
-  // push tab to my list
-  console.log(event)
-  console.log(tab)
+chrome.contextMenus.onClicked.addListener(async (_event, tab) => {
+  await addToMyList({
+    url: tab.url,
+    title: tab.title
+  })
 })

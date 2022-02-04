@@ -6,6 +6,7 @@ export interface LocalStorage {
   myList?: string
   externalRequestsConfig?: CallExternalOptions[]
   filterOptions_includeLists?: string[]
+  searchDebounce?: number
 }
 
 export default {

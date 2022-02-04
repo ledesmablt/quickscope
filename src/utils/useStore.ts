@@ -7,7 +7,8 @@ import { FILTER_LIST_OPTIONS } from 'src/constants'
 const initDefaults: LocalStorage = {
   myList: '',
   externalRequestsConfig: [],
-  filterOptions_includeLists: FILTER_LIST_OPTIONS
+  filterOptions_includeLists: FILTER_LIST_OPTIONS,
+  searchDebounce: 150
 }
 
 export interface Store extends LocalStorage {

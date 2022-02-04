@@ -5,6 +5,7 @@ import { filterSearchList } from './list'
 import searchParser from './searchParser'
 import useAsyncSearchList from './useAsyncSearchList'
 import useDebounce from './useDebounce'
+import useStore from './useStore'
 
 const LIMIT = 100
 
@@ -14,15 +15,18 @@ interface UseSearch {
   empty: boolean
 }
 export default (searchText: string): UseSearch => {
-  const searchInput = useMemo(() => searchParser(searchText), [searchText])
-  const debouncedSearchInput = useDebounce(searchInput)
+  const searchDebounce = useStore((store) => store.searchDebounce) || 150
+  const searchInput = useDebounce(
+    useMemo(() => searchParser(searchText), [searchText]),
+    searchDebounce
+  )
 
   const {
     searchList: asyncSearchList,
     loading,
     numTriggers: numAsyncTriggers,
     empty
-  } = useAsyncSearchList(debouncedSearchInput.searchText)
+  } = useAsyncSearchList(searchInput.searchText)
 
   const searchList = useMemo(
     () => filterSearchList(asyncSearchList, searchInput.flags),
@@ -40,11 +44,11 @@ export default (searchText: string): UseSearch => {
 
   const results = useMemo(() => {
     const resultList =
-      searchText && debouncedSearchInput.searchText
+      searchText && searchInput.searchText
         ? fzf.find(searchInput.searchText)
         : []
     return resultList.map((r) => r.item)
-  }, [debouncedSearchInput.searchText, fzf])
+  }, [searchInput.searchText, fzf])
 
   return {
     data: results,

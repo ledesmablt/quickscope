@@ -16,7 +16,7 @@ interface Args {
 }
 export default ({ callExternalOptions, onCompleted }: Args): ReturnType => {
   const { initialized } = useStore()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [data, setData] = useState<SearchEntry[]>([])
 
   useEffect(() => {

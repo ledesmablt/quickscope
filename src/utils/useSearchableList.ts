@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { SearchEntry } from 'src/types'
+import { SearchItem } from 'src/types'
 import { CallExternalOptions } from './callExternal'
 import { buildSearchableList } from './list'
 import useStore from './useStore'
 
 interface ReturnType {
-  data: SearchEntry[]
+  data: SearchItem[]
   loading: boolean
   refetch: VoidFunction
   empty: boolean
@@ -14,7 +14,7 @@ interface Args {
   searchText: string
   debounce?: number
   callExternalOptions: CallExternalOptions[]
-  onCompleted?: (data: SearchEntry[], searchText: string) => void
+  onCompleted?: (data: SearchItem[], searchText: string) => void
 }
 export default ({
   searchText,
@@ -23,7 +23,7 @@ export default ({
 }: Args): ReturnType => {
   const { initialized } = useStore()
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState<SearchEntry[]>([])
+  const [data, setData] = useState<SearchItem[]>([])
 
   useEffect(() => {
     if (searchText.trim()) {

@@ -1,12 +1,12 @@
 import yaml from 'js-yaml'
 import _ from 'lodash'
 
-import { SearchEntry } from 'src/types'
-import validateSearchEntry from 'src/utils/validateSearchEntry'
+import { SearchItem } from 'src/types'
+import validateSearchItem from 'src/utils/validateSearchItem'
 import { ValidationError } from 'yup'
 
 export interface ParseResult {
-  data?: SearchEntry[]
+  data?: SearchItem[]
   error?: {
     message?: string
     location?: string
@@ -18,8 +18,8 @@ export const parseYamlString = (value: string): ParseResult => {
     return {}
   }
   let doc: any
-  let data: SearchEntry[]
-  let errorEntryNum: number
+  let data: SearchItem[]
+  let errorItemNum: number
   try {
     doc = yaml.load(value)
     if (!_.isArray(doc)) {
@@ -31,8 +31,8 @@ export const parseYamlString = (value: string): ParseResult => {
       doc.map((v: any, index: number) => {
         try {
           if (!v?.items) {
-            // assume single search entry
-            return validateSearchEntry(v)
+            // assume single search item
+            return validateSearchItem(v)
           }
           if (!_.isArray(v?.items)) {
             throw new Error('format error: items must be a bullet list')
@@ -40,15 +40,15 @@ export const parseYamlString = (value: string): ParseResult => {
           if (!v.label) {
             throw new Error('format error: label missing')
           }
-          // assume list containg search entry
+          // assume list containg search item
           return v.items.map((i: any) =>
-            validateSearchEntry({
+            validateSearchItem({
               ...i,
               label: v.label
             })
           )
         } catch (err) {
-          errorEntryNum = index + 1
+          errorItemNum = index + 1
           throw err
         }
       })
@@ -68,14 +68,14 @@ export const parseYamlString = (value: string): ParseResult => {
       return {
         error: {
           message: `${err.message}`,
-          location: `entry #${errorEntryNum}`
+          location: `item #${errorItemNum}`
         }
       }
     } else {
       return {
         error: {
           message: err?.toString(),
-          location: _.isNumber(errorEntryNum) ? `entry #${errorEntryNum}` : null
+          location: _.isNumber(errorItemNum) ? `item #${errorItemNum}` : null
         }
       }
     }

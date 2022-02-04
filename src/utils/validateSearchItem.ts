@@ -1,7 +1,7 @@
-import { SearchEntry } from 'src/types'
+import { SearchItem } from 'src/types'
 import * as yup from 'yup'
 
-export const schema: yup.SchemaOf<SearchEntry> = yup
+export const schema: yup.SchemaOf<SearchItem> = yup
   .object({
     url: yup
       .string()

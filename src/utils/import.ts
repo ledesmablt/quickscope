@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import yaml from 'js-yaml'
 import Papa from 'papaparse'
-import { SearchEntry } from 'src/types'
-import validateSearchEntry from './validateSearchEntry'
+import { SearchItem } from 'src/types'
+import validateSearchItem from './validateSearchItem'
 
 export const fileUploadToString = async (
   e: React.ChangeEvent<HTMLInputElement>
@@ -45,9 +45,9 @@ export const importSettingsJson = async (
   alert('Settings successfully imported')
 }
 
-export const importSearchEntriesCsv = async (
+export const importSearchItemsCsv = async (
   e: React.ChangeEvent<HTMLInputElement>
-): Promise<SearchEntry[]> => {
+): Promise<SearchItem[]> => {
   const string = await fileUploadToString(e)
   const result = Papa.parse(string, {
     header: true
@@ -57,18 +57,18 @@ export const importSearchEntriesCsv = async (
     return
   }
   try {
-    const formattedResult: SearchEntry[] = result.data.map((d) => {
+    const formattedResult: SearchItem[] = result.data.map((d) => {
       if (!_.isObjectLike(d)) {
         throw new Error('Parser error. Please double check your file.')
       }
-      const formattedEntry: SearchEntry = _.pickBy(d, Boolean) as any
+      const formattedItem: SearchItem = _.pickBy(d, Boolean) as any
       if (d.tags && typeof d.tags === 'string') {
         const tags = d.tags.split(',')
         if (tags.length) {
-          formattedEntry.tags = tags
+          formattedItem.tags = tags
         }
       }
-      return validateSearchEntry(formattedEntry)
+      return validateSearchItem(formattedItem)
     })
     return formattedResult
   } catch (err: any) {
@@ -81,9 +81,9 @@ export const importMyListCsv = async (
   e: React.ChangeEvent<HTMLInputElement>,
   updateMyList: (value: string) => void
 ) => {
-  const result = await importSearchEntriesCsv(e)
+  const result = await importSearchItemsCsv(e)
   const approved = confirm(
-    `Import ${result.length} entries? This will overwrite your current list.`
+    `Import ${result.length} list items? This will overwrite your current list.`
   )
   if (!approved) {
     return

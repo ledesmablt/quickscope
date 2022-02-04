@@ -1,30 +1,30 @@
 import React, { ReactElement, useMemo } from 'react'
-import { SearchEntry } from 'src/types'
+import { SearchItem } from 'src/types'
 
 interface Props {
-  searchEntry: SearchEntry
+  searchItem: SearchItem
 }
-const SearchItem = ({ searchEntry }: Props): ReactElement => {
+const SearchItemRow = ({ searchItem }: Props): ReactElement => {
   const infoText = useMemo(() => {
-    if (searchEntry.description) {
-      return searchEntry.description
+    if (searchItem.description) {
+      return searchItem.description
     }
     try {
-      let { host } = new URL(searchEntry.url)
+      let { host } = new URL(searchItem.url)
       host = host.replace(/^www\./, '')
       return host
     } catch {
-      return searchEntry.url
+      return searchItem.url
     }
-  }, [searchEntry.url, searchEntry.description])
+  }, [searchItem.url, searchItem.description])
 
   return (
-    <a href={searchEntry.url}>
+    <a href={searchItem.url}>
       <div className='inline-block w-full flex justify-between items-end'>
         <span className='truncate w-[calc(100%-6rem)]'>
-          {searchEntry.title || searchEntry.url}
+          {searchItem.title || searchItem.url}
         </span>
-        {searchEntry.title && (
+        {searchItem.title && (
           <span className='truncate text-xs text-right pl-2 pb-1 w-[6rem]'>
             {infoText}
           </span>
@@ -33,4 +33,4 @@ const SearchItem = ({ searchEntry }: Props): ReactElement => {
     </a>
   )
 }
-export default SearchItem
+export default SearchItemRow

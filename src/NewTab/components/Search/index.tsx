@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import getKeyAction from 'src/utils/getKeyAction'
-import SearchItem from '../SearchItem'
+import SearchItemRow from '../SearchItemRow'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -187,7 +187,7 @@ const Search = (): ReactElement => {
                     inputRef?.current?.focus()
                   }}
                 >
-                  <SearchItem searchEntry={result} />
+                  <SearchItemRow searchItem={result} />
                 </div>
               )
             })}

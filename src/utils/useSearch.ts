@@ -1,6 +1,6 @@
 import { extendedMatch, Fzf } from 'fzf'
 import { useMemo } from 'react'
-import { SearchEntry } from 'src/types'
+import { SearchItem } from 'src/types'
 import { filterSearchList } from './list'
 import searchParser from './searchParser'
 import useAsyncSearchList from './useAsyncSearchList'
@@ -10,7 +10,7 @@ import useStore from './useStore'
 const LIMIT = 100
 
 interface UseSearch {
-  data: SearchEntry[]
+  data: SearchItem[]
   loading: boolean
   empty: boolean
 }

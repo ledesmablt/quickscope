@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
-import { SearchEntry } from 'src/types'
+import { SearchItem } from 'src/types'
 import { CallExternalOptions } from './callExternal'
 import { buildStaticList } from './list'
 import useStore from './useStore'
 
 interface ReturnType {
-  data: SearchEntry[]
+  data: SearchItem[]
   loading: boolean
   refetch: VoidFunction
   empty: boolean
 }
 interface Args {
   callExternalOptions: CallExternalOptions[]
-  onCompleted?: (data: SearchEntry[]) => void
+  onCompleted?: (data: SearchItem[]) => void
 }
 export default ({ callExternalOptions, onCompleted }: Args): ReturnType => {
   const { initialized } = useStore()
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState<SearchEntry[]>([])
+  const [data, setData] = useState<SearchItem[]>([])
 
   useEffect(() => {
     refetch()

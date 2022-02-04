@@ -1,4 +1,4 @@
-export interface SearchEntry {
+export interface SearchItem {
   url: string
   title?: string
   description?: string

@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import _ from 'lodash'
-import { SearchEntry } from 'src/types'
-import validateSearchEntry from './validateSearchEntry'
+import { SearchItem } from 'src/types'
+import validateSearchItem from './validateSearchItem'
 
 export const interpolateRegex = /\{\{\s*search_text\s*\}\}/g
 
@@ -16,7 +16,7 @@ export interface CallExternalOptions {
 export default async (
   { requestConfig, transformMap, pathToData, label }: CallExternalOptions,
   searchText?: string
-): Promise<SearchEntry[]> => {
+): Promise<SearchItem[]> => {
   // make request
   const axiosConfig = formatRequestConfig(requestConfig, searchText)
   const response = await axios(axiosConfig)
@@ -32,18 +32,18 @@ export default async (
   }
 
   // build list
-  const validResult = arrayData.map((entry) => {
-    // build each entry using transformMap
-    const formattedEntry: Partial<SearchEntry> = {}
+  const validResult = arrayData.map((item) => {
+    // build each item using transformMap
+    const formattedItem: Partial<SearchItem> = {}
     for (const [key, path] of Object.entries(transformMap)) {
       const getProperty = _.property(path)
-      formattedEntry[key] = getProperty(entry)
+      formattedItem[key] = getProperty(item)
     }
-    if (label && !formattedEntry.label) {
-      formattedEntry.label = label
+    if (label && !formattedItem.label) {
+      formattedItem.label = label
     }
     // validate schema
-    return validateSearchEntry(formattedEntry)
+    return validateSearchItem(formattedItem)
   })
   return validResult
 }

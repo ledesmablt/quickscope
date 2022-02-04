@@ -1,4 +1,4 @@
-import { SearchEntry } from 'src/types'
+import { SearchItem } from 'src/types'
 import storage from './storage'
 
 export const getBookmarks = async () => {
@@ -24,7 +24,7 @@ export const getBookmarks = async () => {
 
 export const formatBookmark = (
   bookmark: chrome.bookmarks.BookmarkTreeNode
-): SearchEntry => {
+): SearchItem => {
   return {
     url: bookmark.url,
     title: bookmark.title,

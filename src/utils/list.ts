@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { SearchEntry } from 'src/types'
+import { SearchItem } from 'src/types'
 import { getBookmarks } from './bookmarks'
 import callExternal, {
   CallExternalOptions,
@@ -8,7 +8,7 @@ import callExternal, {
 import { parseYamlString } from './dataParser'
 import storage from './storage'
 
-const getMyList = async (): Promise<SearchEntry[]> => {
+const getMyList = async (): Promise<SearchItem[]> => {
   const included = (await storage.get('filterOptions_includeLists'))?.includes(
     'my list'
   )
@@ -54,7 +54,7 @@ export const groupRequests = (
 export const makeExternalRequests = async (
   externalConfigs: CallExternalOptions[],
   searchText?: string
-): Promise<SearchEntry[]> => {
+): Promise<SearchItem[]> => {
   return _.flatten(
     await Promise.all(
       externalConfigs.map(async (externalConfig) => {
@@ -86,7 +86,7 @@ export const buildStaticList = async (
 export const buildSearchableList = async (
   externalConfigs: CallExternalOptions[],
   searchText: string
-): Promise<SearchEntry[]> => {
+): Promise<SearchItem[]> => {
   return await makeExternalRequests(externalConfigs, searchText)
 }
 
@@ -110,8 +110,8 @@ export interface FilterFlags {
   }
 }
 
-// for special keywords that aren't in the SearchEntry Property
-const filterPropMap: Record<string, keyof SearchEntry> = {
+// for special keywords that aren't in the SearchItem Property
+const filterPropMap: Record<string, keyof SearchItem> = {
   in: 'label',
   tag: 'tags',
   'tag=': 'tags',
@@ -119,25 +119,25 @@ const filterPropMap: Record<string, keyof SearchEntry> = {
 }
 
 export const filterSearchList = (
-  list: SearchEntry[],
+  list: SearchItem[],
   filterFlags: FilterFlags
-): SearchEntry[] => {
+): SearchItem[] => {
   let searchList = list
   if (Object.keys(filterFlags.string).length) {
-    searchList = searchList.filter((searchEntry) => {
-      // searchEntry url must contain stringContains.url, and so on
+    searchList = searchList.filter((searchItem) => {
+      // searchItem url must contain stringContains.url, and so on
       return Object.entries(filterFlags.string).every(([key, value]) => {
         const { text, matchType, inverse } = value
-        const entryKey = filterPropMap[key] || key
-        const entryValue: string = searchEntry[entryKey]
-        if (!entryValue) {
+        const itemKey = filterPropMap[key] || key
+        const itemValue: string = searchItem[itemKey]
+        if (!itemValue) {
           return false
         }
         let result: boolean
         if (matchType === 'equals') {
-          result = entryValue.toLowerCase() === text.toLowerCase()
+          result = itemValue.toLowerCase() === text.toLowerCase()
         } else if (matchType === 'includes') {
-          result = entryValue.toLowerCase().search(text.toLowerCase()) >= 0
+          result = itemValue.toLowerCase().search(text.toLowerCase()) >= 0
         } else {
           throw new Error('invalid match type')
         }
@@ -146,22 +146,22 @@ export const filterSearchList = (
     })
   }
   if (Object.keys(filterFlags.array).length) {
-    searchList = searchList.filter((searchEntry) => {
+    searchList = searchList.filter((searchItem) => {
       return Object.entries(filterFlags.array).every(([key, value]) => {
         const { text, matchType, inverse } = value
-        const entryKey = filterPropMap[key] || key
-        const entryValue: string[] = searchEntry[entryKey]
-        if (!_.isArray(entryValue) || !entryValue?.length) {
+        const itemKey = filterPropMap[key] || key
+        const itemValue: string[] = searchItem[itemKey]
+        if (!_.isArray(itemValue) || !itemValue?.length) {
           // no tags
           return inverse
         }
         let result: boolean
         if (matchType === 'equals') {
-          result = !!entryValue.find(
+          result = !!itemValue.find(
             (v) => v.toLowerCase() === text.toLowerCase()
           )
         } else if (matchType === 'includes') {
-          result = !!entryValue.find(
+          result = !!itemValue.find(
             (v) => v.toLowerCase().search(text.toLowerCase()) >= 0
           )
         } else {

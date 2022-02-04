@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { SearchEntry } from 'src/types'
+import { SearchItem } from 'src/types'
 import { groupRequests, IGroupRequests } from './list'
 import useSearchableList from './useSearchableList'
 import useStaticList from './useStaticList'
 import useStore from './useStore'
 
 interface AsyncSearchListResult {
-  searchList: SearchEntry[]
+  searchList: SearchItem[]
   numTriggers: number
   loading: boolean
   empty: boolean

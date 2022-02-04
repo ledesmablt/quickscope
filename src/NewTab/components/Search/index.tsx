@@ -1,21 +1,11 @@
-import { extendedMatch, Fzf } from 'fzf'
 import { useNavigate } from 'react-router-dom'
-import React, {
-  ReactElement,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react'
+import React, { ReactElement, useEffect, useRef, useState } from 'react'
 import getKeyAction from 'src/utils/getKeyAction'
-import { filterSearchList } from 'src/utils/list'
-import searchParser from 'src/utils/searchParser'
-import useAsyncSearchList from 'src/utils/useAsyncSearchList'
-import useDebounce from 'src/utils/useDebounce'
 import SearchItem from '../SearchItem'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import useSearch from 'src/utils/useSearch'
 
 interface OnLaunchOptions {
   newTab?: boolean
@@ -28,8 +18,6 @@ const onLaunch = (url: string, options?: OnLaunchOptions) => {
   }
 }
 
-const LIMIT = 100
-
 const Search = (): ReactElement => {
   const navigate = useNavigate()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -40,37 +28,8 @@ const Search = (): ReactElement => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [disableMouseEvent, setDisableMouseSelect] = useState(false)
 
-  const searchInput = useMemo(() => searchParser(searchText), [searchText])
-  const debouncedSearchInput = useDebounce(searchInput)
-
-  const {
-    searchList: asyncSearchList,
-    loading,
-    numTriggers: numAsyncTriggers
-  } = useAsyncSearchList(debouncedSearchInput.searchText)
-
-  const searchList = useMemo(
-    () => filterSearchList(asyncSearchList, searchInput.flags),
-    [numAsyncTriggers, searchInput.flags.string, searchInput.flags.array]
-  )
-  const fzf = useMemo(() => {
-    return new Fzf(searchList, {
-      selector: (v) => {
-        return v.title + v.url || '' + v.description || ''
-      },
-      match: extendedMatch,
-      limit: LIMIT
-    })
-  }, [searchList])
-
-  const results = useMemo(() => {
-    const resultList =
-      searchText && debouncedSearchInput.searchText
-        ? fzf.find(searchInput.searchText)
-        : []
-    return resultList
-  }, [debouncedSearchInput.searchText, fzf])
-  const selectedResult = results[selectedIndex]?.item
+  const { data: results, loading } = useSearch(searchText)
+  const selectedResult = results[selectedIndex]
 
   useEffect(() => {
     // prevent out of bounds selections
@@ -213,7 +172,6 @@ const Search = (): ReactElement => {
           >
             {results.map((result, index) => {
               const isSelected = selectedIndex === index
-              const searchEntry = result.item
               return (
                 <div
                   ref={index === selectedIndex ? selectedRef : null}
@@ -229,7 +187,7 @@ const Search = (): ReactElement => {
                     inputRef?.current?.focus()
                   }}
                 >
-                  <SearchItem searchEntry={searchEntry} />
+                  <SearchItem searchEntry={result} />
                 </div>
               )
             })}

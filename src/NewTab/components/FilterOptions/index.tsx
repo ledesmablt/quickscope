@@ -3,7 +3,7 @@ import useStore from 'src/utils/useStore'
 import { FILTER_LIST_OPTIONS } from 'src/constants'
 
 const FilterOptions = (): ReactElement => {
-  const { filterOptions_includeLists: includeLists } = useStore()
+  const includeLists = useStore((store) => store.filterOptions_includeLists)
   const setIncludeLists = (value: string[]) => {
     useStore.setState({
       filterOptions_includeLists: value

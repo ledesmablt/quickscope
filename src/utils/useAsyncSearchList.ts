@@ -14,7 +14,12 @@ interface AsyncSearchListResult {
 export default (searchText: string = ''): AsyncSearchListResult => {
   const [numTriggers, setNumTriggers] = useState(0)
 
-  const { filterOptions_includeLists, externalRequestsConfig } = useStore()
+  const includeListsCached = useStore(
+    (store) => store.filterOptions_includeLists
+  )
+  const externalRequestsConfig = useStore(
+    (store) => store.externalRequestsConfig
+  )
 
   const [groupedRequests, setGroupedRequests] = useState<IGroupRequests>({
     static: [],
@@ -47,12 +52,12 @@ export default (searchText: string = ''): AsyncSearchListResult => {
 
   useEffect(() => {
     // reload if includeLists updated
-    if (!filterOptions_includeLists) {
+    if (!includeListsCached) {
       return
     }
     refetchStatic()
     refetchSearchable()
-  }, [filterOptions_includeLists])
+  }, [includeListsCached])
 
   useEffect(() => {
     // increment numTriggers when both lists finish loading

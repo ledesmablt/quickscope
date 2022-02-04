@@ -21,7 +21,7 @@ export default ({
   callExternalOptions,
   onCompleted
 }: Args): ReturnType => {
-  const { initialized } = useStore()
+  const initialized = useStore((store) => store.initialized)
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<SearchItem[]>([])
 

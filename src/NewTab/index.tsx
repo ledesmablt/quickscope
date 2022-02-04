@@ -6,7 +6,7 @@ import '../styles.css'
 import Home from './pages/Home'
 import Settings from './pages/Settings'
 import Nav from './components/Nav'
-import useStore from 'src/utils/useStore'
+import useStore, { defaults as storeDefaults } from 'src/utils/useStore'
 import _ from 'lodash'
 import storage from 'src/utils/storage'
 
@@ -14,9 +14,13 @@ const NewTab = (): ReactElement => {
   const store = useStore()
   useEffect(() => {
     store.init().then(async () => {
+      const localStorageKeys = Object.keys(storeDefaults)
       useStore.subscribe(async (newState, oldState) => {
         // keep store & local storage in sync
         const changes = _.pickBy(newState, (v, k) => {
+          if (!localStorageKeys.includes(k)) {
+            return
+          }
           return !_.isEqual(v, oldState?.[k])
         })
         if (changes && Object.keys(changes).length) {

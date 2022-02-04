@@ -1,13 +1,39 @@
 import React, { ReactElement } from 'react'
 import useStore from 'src/utils/useStore'
-import { FILTER_LIST_OPTIONS } from 'src/constants'
+import { FILTER_LIST_OPTIONS, FILTER_LIST_PERMISSION_MAP } from 'src/constants'
 
 const FilterOptions = (): ReactElement => {
-  const includeLists = useStore((store) => store.filterOptions_includeLists)
+  const {
+    includeLists,
+    allowedPermissions = [],
+    requestPermissions
+  } = useStore((store) => ({
+    includeLists: store.filterOptions_includeLists,
+    allowedPermissions: store.permissions,
+    requestPermissions: store.requestPermissions
+  }))
   const setIncludeLists = (value: string[]) => {
     useStore.setState({
       filterOptions_includeLists: value
     })
+  }
+
+  const onRemove = (option: string) => {
+    setIncludeLists(includeLists.filter((v) => v !== option))
+  }
+
+  const onAdd = async (option: string) => {
+    const requiredPermission = FILTER_LIST_PERMISSION_MAP[option]
+    if (requiredPermission) {
+      const hasPermission = allowedPermissions.includes(requiredPermission)
+      if (!hasPermission) {
+        const granted = await requestPermissions([requiredPermission])
+        if (!granted) {
+          return
+        }
+      }
+    }
+    setIncludeLists([...includeLists, option])
   }
 
   return (
@@ -26,13 +52,11 @@ const FilterOptions = (): ReactElement => {
                 id={id}
                 type='checkbox'
                 checked={checked}
-                onChange={() => {
+                onChange={async () => {
                   if (checked) {
-                    // remove
-                    setIncludeLists(includeLists.filter((v) => v !== option))
+                    onRemove(option)
                   } else {
-                    // add
-                    setIncludeLists([...includeLists, option])
+                    onAdd(option)
                   }
                 }}
                 className='mr-2'

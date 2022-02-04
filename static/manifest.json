@@ -4,7 +4,9 @@
   "manifest_version": 3,
   "permissions": [
     "activeTab",
-    "storage",
+    "storage"
+  ],
+  "optional_permissions": [
     "bookmarks"
   ],
   "chrome_url_overrides": {

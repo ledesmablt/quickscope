@@ -10,7 +10,8 @@ const LIMIT = 100
 
 interface UseSearch {
   data: SearchEntry[]
-  loading?: boolean
+  loading: boolean
+  empty: boolean
 }
 export default (searchText: string): UseSearch => {
   const searchInput = useMemo(() => searchParser(searchText), [searchText])
@@ -19,7 +20,8 @@ export default (searchText: string): UseSearch => {
   const {
     searchList: asyncSearchList,
     loading,
-    numTriggers: numAsyncTriggers
+    numTriggers: numAsyncTriggers,
+    empty
   } = useAsyncSearchList(debouncedSearchInput.searchText)
 
   const searchList = useMemo(
@@ -46,6 +48,7 @@ export default (searchText: string): UseSearch => {
 
   return {
     data: results,
-    loading
+    loading,
+    empty
   }
 }

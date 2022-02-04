@@ -8,6 +8,7 @@ interface ReturnType {
   data: SearchEntry[]
   loading: boolean
   refetch: VoidFunction
+  empty: boolean
 }
 interface Args {
   searchText: string
@@ -48,6 +49,7 @@ export default ({
   return {
     data,
     loading,
-    refetch
+    refetch,
+    empty: initialized && !loading && !callExternalOptions.length
   }
 }

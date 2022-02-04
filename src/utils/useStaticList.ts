@@ -8,6 +8,7 @@ interface ReturnType {
   data: SearchEntry[]
   loading: boolean
   refetch: VoidFunction
+  empty: boolean
 }
 interface Args {
   callExternalOptions: CallExternalOptions[]
@@ -39,6 +40,7 @@ export default ({ callExternalOptions, onCompleted }: Args): ReturnType => {
   return {
     data,
     loading,
-    refetch
+    refetch,
+    empty: initialized && !loading && !data.length
   }
 }

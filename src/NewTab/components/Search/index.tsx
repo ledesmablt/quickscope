@@ -28,7 +28,7 @@ const Search = (): ReactElement => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [disableMouseEvent, setDisableMouseSelect] = useState(false)
 
-  const { data: results, loading } = useSearch(searchText)
+  const { data: results, loading, empty } = useSearch(searchText)
   const selectedResult = results[selectedIndex]
 
   useEffect(() => {
@@ -191,6 +191,13 @@ const Search = (): ReactElement => {
                 </div>
               )
             })}
+          </div>
+        )}
+        {empty && (
+          <div className='flex pt-2 justify-end w-full'>
+            <p className='text-xs'>
+              your list is empty! set it up in the settings page.
+            </p>
           </div>
         )}
       </div>

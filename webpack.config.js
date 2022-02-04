@@ -11,7 +11,6 @@ const IS_PROD = process.env.NODE_ENV === 'production'
 module.exports = {
   devtool: 'inline-source-map',
   entry: {
-    popup: './src/Popup/index.tsx',
     newTab: './src/NewTab/index.tsx',
     backgroundScript: './src/backgroundScript.ts'
   },

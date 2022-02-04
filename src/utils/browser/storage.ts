@@ -1,6 +1,6 @@
 // in case supporting different browsers, can use this as an "API"
 
-import { CallExternalOptions } from './callExternal'
+import { CallExternalOptions } from '../callExternal'
 
 export interface LocalStorage {
   myList?: string

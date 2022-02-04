@@ -5,7 +5,7 @@ import SearchItemRow from '../SearchItemRow'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
-import useSearch from 'src/utils/useSearch'
+import useSearch from 'src/utils/hooks/useSearch'
 import { SearchItem } from 'src/types'
 
 interface OnLaunchOptions {

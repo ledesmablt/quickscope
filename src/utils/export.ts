@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import Papa from 'papaparse'
 import { parseYamlString } from './dataParser'
-import storage from './storage'
+import storage from './browser/storage'
 
 export const downloadData = (data: any, filename: string): void => {
   const element = document.createElement('a')

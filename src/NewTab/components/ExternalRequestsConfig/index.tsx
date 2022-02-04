@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect, useState } from 'react'
 import { CallExternalOptions } from 'src/utils/callExternal'
-import useStore, { Store } from 'src/utils/useStore'
+import useStore, { Store } from 'src/utils/hooks/useStore'
 import Form, { formatAsStrings, newOptionDefault } from './Form'
 
 const ExternalRequestsConfig = (): ReactElement => {

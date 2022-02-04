@@ -1,5 +1,5 @@
 import React, { ReactElement, useRef } from 'react'
-import useOnClickOutside from 'src/utils/useOnClickOutside'
+import useOnClickOutside from 'src/utils/hooks/useOnClickOutside'
 
 interface Props {
   children?: ReactElement | ReactElement[]

@@ -1,4 +1,4 @@
-import storage, { LocalStorage } from './storage'
+import storage, { LocalStorage } from '../browser/storage'
 
 import create from 'zustand'
 import _ from 'lodash'

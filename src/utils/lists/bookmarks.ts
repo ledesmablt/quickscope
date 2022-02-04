@@ -1,6 +1,6 @@
 import { SearchItem } from 'src/types'
-import permissions from './permissions'
-import storage from './storage'
+import permissions from 'src/utils/browser/permissions'
+import storage from 'src/utils/browser/storage'
 
 export const getBookmarks = async () => {
   const included = (await storage.get('filterOptions_includeLists'))?.includes(

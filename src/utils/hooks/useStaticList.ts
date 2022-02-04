@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { SearchItem } from 'src/types'
-import { CallExternalOptions } from './callExternal'
-import { buildStaticList } from './list'
+import { CallExternalOptions } from '../callExternal'
+import { buildStaticList } from '../lists'
 import useStore from './useStore'
 
 interface ReturnType {

@@ -1,4 +1,4 @@
-import { FieldMatchOptions, FilterFlags } from './list'
+import { FieldMatchOptions, FilterFlags } from './lists'
 
 interface SearchParserResult {
   searchText: string

@@ -5,7 +5,7 @@ import FilterOptions from '../components/FilterOptions'
 import ExternalRequestsConfig from '../components/ExternalRequestsConfig'
 import { exportMyListCsv, exportSettingsJson } from 'src/utils/export'
 import { importMyListCsv, importSettingsJson } from 'src/utils/import'
-import useStore from 'src/utils/useStore'
+import useStore from 'src/utils/hooks/useStore'
 
 const Settings = (): ReactElement => {
   const myListTextCached = useStore((store) => store.myList) || ''

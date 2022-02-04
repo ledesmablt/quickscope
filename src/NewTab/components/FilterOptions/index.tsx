@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react'
-import useStore from 'src/utils/useStore'
+import useStore from 'src/utils/hooks/useStore'
 import { FILTER_LIST_OPTIONS, FILTER_LIST_PERMISSION_MAP } from 'src/constants'
-import permissions from 'src/utils/permissions'
+import permissions from 'src/utils/browser/permissions'
 
 const FilterOptions = (): ReactElement => {
   const { includeLists } = useStore((store) => ({

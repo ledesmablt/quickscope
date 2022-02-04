@@ -1,6 +1,6 @@
 import * as yup from 'yup'
 import { CallExternalOptions } from './callExternal'
-import { LocalStorage } from './storage'
+import { LocalStorage } from './browser/storage'
 
 const externalRequestConfigSchema: yup.SchemaOf<CallExternalOptions> =
   yup.object({

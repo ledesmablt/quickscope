@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { SearchItem } from 'src/types'
-import { groupRequests, IGroupRequests } from './list'
+import { groupRequests, IGroupRequests } from '../lists/externalRequests'
 import useSearchableList from './useSearchableList'
 import useStaticList from './useStaticList'
 import useStore from './useStore'

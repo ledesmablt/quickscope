@@ -6,9 +6,9 @@ import '../styles.css'
 import Home from './pages/Home'
 import Settings from './pages/Settings'
 import Nav from './components/Nav'
-import useStore, { defaults as storeDefaults } from 'src/utils/useStore'
+import useStore, { defaults as storeDefaults } from 'src/utils/hooks/useStore'
 import _ from 'lodash'
-import storage from 'src/utils/storage'
+import storage from 'src/utils/browser/storage'
 
 const NewTab = (): ReactElement => {
   const store = useStore()

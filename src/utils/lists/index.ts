@@ -1,75 +1,10 @@
 import _ from 'lodash'
 import { SearchItem } from 'src/types'
 import { getBookmarks } from './bookmarks'
-import callExternal, {
-  CallExternalOptions,
-  interpolateRegex
-} from './callExternal'
-import { parseYamlString } from './dataParser'
-import storage from './storage'
+import { CallExternalOptions } from '../callExternal'
+import { getMyList } from './myList'
 import { getTabs } from './tabs'
-
-const getMyList = async (): Promise<SearchItem[]> => {
-  const included = (await storage.get('filterOptions_includeLists'))?.includes(
-    'my list'
-  )
-  if (!included) {
-    return []
-  }
-  const myListString = await storage.get('myList')
-  const parseResult = parseYamlString(myListString)
-  if (parseResult.error) {
-    console.error('error parsing "my list"')
-    console.error(parseResult.error.message)
-  }
-  return parseResult.data || []
-}
-
-export interface IGroupRequests {
-  static: CallExternalOptions[]
-  searchable: CallExternalOptions[]
-}
-export const groupRequests = (
-  externalConfigs: CallExternalOptions[]
-): IGroupRequests => {
-  const result: IGroupRequests = { static: [], searchable: [] }
-  if (!_.isArray(externalConfigs)) {
-    return result
-  }
-  // split into static / searchable
-  for (const config of externalConfigs) {
-    if (!config.enabled) {
-      continue
-    }
-    const isSearchable =
-      JSON.stringify(config.requestConfig).search(interpolateRegex) >= 0
-    if (isSearchable) {
-      result.searchable.push(config)
-    } else {
-      result.static.push(config)
-    }
-  }
-  return result
-}
-
-export const makeExternalRequests = async (
-  externalConfigs: CallExternalOptions[],
-  searchText?: string
-): Promise<SearchItem[]> => {
-  return _.flatten(
-    await Promise.all(
-      externalConfigs.map(async (externalConfig) => {
-        try {
-          const data = await callExternal(externalConfig, searchText)
-          return data
-        } catch (err) {
-          console.error(err)
-          return []
-        }
-      })
-    )
-  )
-}
+import { makeExternalRequests } from './externalRequests'
 
 // builds only on page load
 export const buildStaticList = async (

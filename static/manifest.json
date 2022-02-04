@@ -4,6 +4,7 @@
   "manifest_version": 3,
   "permissions": [
     "activeTab",
+    "contextMenus",
     "storage"
   ],
   "optional_permissions": [

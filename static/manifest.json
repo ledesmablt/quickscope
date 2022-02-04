@@ -7,7 +7,8 @@
     "storage"
   ],
   "optional_permissions": [
-    "bookmarks"
+    "bookmarks",
+    "tabs"
   ],
   "chrome_url_overrides": {
     "newtab": "newtab.html"

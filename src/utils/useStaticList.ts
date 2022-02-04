@@ -41,6 +41,7 @@ export default ({ callExternalOptions, onCompleted }: Args): ReturnType => {
     data,
     loading,
     refetch,
-    empty: initialized && !loading && !data.length
+    empty:
+      initialized && !loading && !data.length && !callExternalOptions?.length
   }
 }

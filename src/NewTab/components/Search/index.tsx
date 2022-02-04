@@ -6,15 +6,26 @@ import SearchItemRow from '../SearchItemRow'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import useSearch from 'src/utils/useSearch'
+import { SearchItem } from 'src/types'
 
 interface OnLaunchOptions {
   newTab?: boolean
 }
-const onLaunch = (url: string, options?: OnLaunchOptions) => {
-  if (options?.newTab) {
-    window.open(url, '_blank')
+const onLaunch = (searchItem: SearchItem, options?: OnLaunchOptions) => {
+  if (searchItem.__tabId) {
+    // focus browser tab
+    chrome.tabs.update(searchItem.__tabId, {
+      active: true
+    })
+    chrome.windows.update(searchItem.__windowId, {
+      focused: true
+    })
+  } else if (options?.newTab) {
+    // open in new tab
+    window.open(searchItem.url, '_blank')
   } else {
-    window.open(url, '_self')
+    // open in same window
+    window.open(searchItem.url, '_self')
   }
 }
 
@@ -124,7 +135,7 @@ const Search = (): ReactElement => {
       if (!selectedResult) {
         return
       }
-      onLaunch(selectedResult.url, { newTab: e.ctrlKey || e.metaKey })
+      onLaunch(selectedResult, { newTab: e.ctrlKey || e.metaKey })
     }
   }
 

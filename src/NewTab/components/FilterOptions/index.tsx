@@ -1,16 +1,11 @@
 import React, { ReactElement } from 'react'
 import useStore from 'src/utils/useStore'
 import { FILTER_LIST_OPTIONS, FILTER_LIST_PERMISSION_MAP } from 'src/constants'
+import permissions from 'src/utils/permissions'
 
 const FilterOptions = (): ReactElement => {
-  const {
-    includeLists,
-    allowedPermissions = [],
-    requestPermissions
-  } = useStore((store) => ({
-    includeLists: store.filterOptions_includeLists,
-    allowedPermissions: store.permissions,
-    requestPermissions: store.requestPermissions
+  const { includeLists } = useStore((store) => ({
+    includeLists: store.filterOptions_includeLists
   }))
   const setIncludeLists = (value: string[]) => {
     useStore.setState({
@@ -25,9 +20,10 @@ const FilterOptions = (): ReactElement => {
   const onAdd = async (option: string) => {
     const requiredPermission = FILTER_LIST_PERMISSION_MAP[option]
     if (requiredPermission) {
-      const hasPermission = allowedPermissions.includes(requiredPermission)
+      const hasPermission = await permissions.contains(requiredPermission)
+      console.log(hasPermission)
       if (!hasPermission) {
-        const granted = await requestPermissions([requiredPermission])
+        const granted = await permissions.request(requiredPermission)
         if (!granted) {
           return
         }

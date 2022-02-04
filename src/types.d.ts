@@ -6,4 +6,8 @@ export interface SearchItem {
   label?: string
   tags?: string[]
   priority?: number
+
+  // runtime only
+  __tabId?: number
+  __windowId?: number
 }

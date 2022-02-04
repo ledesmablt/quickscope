@@ -1,4 +1,5 @@
 import { SearchItem } from 'src/types'
+import permissions from './permissions'
 import storage from './storage'
 
 export const getBookmarks = async () => {
@@ -6,6 +7,10 @@ export const getBookmarks = async () => {
     'bookmarks'
   )
   if (!included) {
+    return []
+  }
+  const hasPermission = await permissions.contains('bookmarks')
+  if (!hasPermission) {
     return []
   }
   const tree = await chrome.bookmarks.getTree()

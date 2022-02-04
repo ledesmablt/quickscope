@@ -7,6 +7,7 @@ import callExternal, {
 } from './callExternal'
 import { parseYamlString } from './dataParser'
 import storage from './storage'
+import { getTabs } from './tabs'
 
 const getMyList = async (): Promise<SearchItem[]> => {
   const included = (await storage.get('filterOptions_includeLists'))?.includes(
@@ -74,12 +75,14 @@ export const makeExternalRequests = async (
 export const buildStaticList = async (
   externalConfigs: CallExternalOptions[]
 ) => {
-  const [myList, bookmarks, externalRequests] = await Promise.all([
-    getMyList(),
-    getBookmarks(),
-    makeExternalRequests(externalConfigs)
-  ])
-  return [...myList, ...bookmarks, ...externalRequests]
+  return _.flatten(
+    await Promise.all([
+      getMyList(),
+      getBookmarks(),
+      getTabs(),
+      makeExternalRequests(externalConfigs)
+    ])
+  )
 }
 
 // searchable - useful for API calls expecting frequently changing output

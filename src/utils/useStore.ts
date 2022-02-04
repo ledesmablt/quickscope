@@ -3,7 +3,6 @@ import storage, { LocalStorage } from './storage'
 import create from 'zustand'
 import _ from 'lodash'
 import { FILTER_LIST_DEFAULT_CHECKED } from 'src/constants'
-import permissions from './permissions'
 
 export const defaults: Required<LocalStorage> = {
   myList: '',
@@ -14,29 +13,14 @@ export const defaults: Required<LocalStorage> = {
 
 export interface Store extends LocalStorage {
   initialized: boolean
-  permissions: string[]
-  requestPermissions: (permissions: string[]) => Promise<boolean>
-  init: () => Promise<Omit<Store, 'init' | 'requestPermissions'>>
+  init: () => Promise<void>
 }
 
 const useStore = create<Store>((set) => {
   return {
     initialized: false,
     permissions: [],
-    requestPermissions: async (scopes) => {
-      const granted = await permissions.request(scopes)
-      if (granted) {
-        const allPermissions = await permissions.getAll()
-        set({
-          permissions: allPermissions
-        })
-      }
-      return granted
-    },
     init: async () => {
-      // load up permissions
-      const allPermissions = await permissions.getAll()
-
       // load up local storage
       const storageContent: LocalStorage = _.pickBy(
         (await storage.get()) || {},
@@ -57,13 +41,10 @@ const useStore = create<Store>((set) => {
         await storage.set(changes)
       }
       // update store
-      const store = {
+      set({
         ...storageContent,
-        permissions: allPermissions,
         initialized: true
-      }
-      set(store)
-      return store
+      })
     }
   }
 })

@@ -11,15 +11,13 @@ import { SearchItem } from 'src/types'
 interface OnLaunchOptions {
   newTab?: boolean
 }
-const onLaunch = (searchItem: SearchItem, options?: OnLaunchOptions) => {
+const onLaunch = async (searchItem: SearchItem, options?: OnLaunchOptions) => {
   if (searchItem.__tabId) {
     // focus browser tab
-    chrome.tabs.update(searchItem.__tabId, {
-      active: true
-    })
-    chrome.windows.update(searchItem.__windowId, {
-      focused: true
-    })
+    const currentTab = await chrome.tabs.getCurrent()
+    chrome.tabs.update(searchItem.__tabId, { active: true })
+    chrome.windows.update(searchItem.__windowId, { focused: true })
+    chrome.tabs.remove(currentTab.id)
   } else if (options?.newTab) {
     // open in new tab
     window.open(searchItem.url, '_blank')

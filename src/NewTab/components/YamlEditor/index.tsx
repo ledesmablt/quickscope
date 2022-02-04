@@ -42,7 +42,7 @@ const YamlEditor = ({
     return parseYamlString(value)
   }, [value])
 
-  const submitDisabled = !validatedList || saved
+  const submitDisabled = !!error?.message || saved
 
   const getErrorMessage = (): string => {
     if (!error) {

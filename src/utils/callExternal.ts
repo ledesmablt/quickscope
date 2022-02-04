@@ -11,7 +11,7 @@ export interface CallExternalOptions {
   pathToData?: string // _.property
   label?: string
   enabled?: boolean
-  name?: string
+  name: string
 }
 export default async (
   { requestConfig, transformMap, pathToData, label }: CallExternalOptions,

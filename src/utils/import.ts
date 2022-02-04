@@ -3,6 +3,7 @@ import yaml from 'js-yaml'
 import Papa from 'papaparse'
 import { SearchItem } from 'src/types'
 import validateSearchItem from './validateSearchItem'
+import validateSettings from './validateSettings'
 
 export const fileUploadToString = async (
   e: React.ChangeEvent<HTMLInputElement>
@@ -34,14 +35,14 @@ export const importSettingsJson = async (
   updateStorage: (body: any) => void
 ) => {
   const string = await fileUploadToString(e)
-  const res = JSON.parse(string)
+  const newSettings = validateSettings(JSON.parse(string))
   const approved = confirm(
     'Confirm import settings? This will override all your existing settings.'
   )
   if (!approved) {
     return
   }
-  updateStorage(res)
+  updateStorage(newSettings)
   alert('Settings successfully imported')
 }
 

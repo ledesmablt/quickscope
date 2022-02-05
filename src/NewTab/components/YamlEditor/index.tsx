@@ -2,13 +2,17 @@ import React, { ReactElement, useEffect, useMemo, useState } from 'react'
 import _ from 'lodash'
 import { parseYamlString } from 'src/utils/dataParser'
 
-const placeholderText = `# example
+const placeholderText = `# examples
 
 - url: http://example.com
   title: title
   description: description
 
 - url: http://another_example.com
+  label: mylabel
+  tags:
+    - tag 1
+    - tag 2
 `
 
 interface Props {
@@ -33,7 +37,7 @@ const YamlEditor = ({
     setSaved(false)
   }, [value])
 
-  const numLines = Math.min(Math.max(10, value.split('\n').length), 25)
+  const numLines = Math.min(Math.max(12, value.split('\n').length), 25)
 
   const { data: validatedList, error } = useMemo(() => {
     if (!value) {

@@ -17,7 +17,19 @@ export const getTabs = async () => {
     currentWindow: true
   })
   const tabs = await browser.tabs.query({})
-  return tabs.filter((tab) => tab.id !== currentTab?.id).map(formatTab)
+  // tab groups not available in firefox
+  const tabGroups = await browser.tabGroups?.query({})
+  return tabs
+    .filter((tab) => tab.id !== currentTab?.id)
+    .map((tab) => {
+      const tabGroup = tabGroups?.find(
+        (g) => tab.groupId && g.id === tab.groupId
+      )
+      return {
+        ...formatTab(tab),
+        tags: tabGroup?.title ? [tabGroup.title] : null
+      }
+    })
 }
 
 export const formatTab = (tab: chrome.tabs.Tab): SearchItem => {

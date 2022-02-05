@@ -35,7 +35,15 @@ export default (searchText: string): UseSearch => {
   const fzf = useMemo(() => {
     return new Fzf(searchList, {
       selector: (v) => {
-        return v.title + v.url || '' + v.description || ''
+        return [
+          v.title,
+          v.label,
+          v.description,
+          v.tags?.length ? v.tags.join(' ') : '',
+          v.url
+        ]
+          .filter(Boolean)
+          .join(' ')
       },
       match: extendedMatch,
       limit: LIMIT

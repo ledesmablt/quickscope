@@ -5,9 +5,14 @@ import { SearchItem } from 'src/types'
 import validateSearchItem from './validateSearchItem'
 import validateSettings from './validateSettings'
 
+interface FileUploadResult {
+  filename: string
+  data: string
+  type: string
+}
 export const fileUploadToString = async (
   e: React.ChangeEvent<HTMLInputElement>
-): Promise<string> => {
+): Promise<FileUploadResult> => {
   e.preventDefault()
   return new Promise((resolve, reject) => {
     try {
@@ -16,7 +21,11 @@ export const fileUploadToString = async (
       reader.readAsText(file)
       reader.onload = (event) => {
         try {
-          resolve(event.target.result?.toString())
+          resolve({
+            filename: file.name,
+            data: event.target.result?.toString(),
+            type: file.type
+          })
         } catch (err) {
           reject(err)
         }
@@ -34,8 +43,8 @@ export const importSettingsJson = async (
   e: React.ChangeEvent<HTMLInputElement>,
   updateStorage: (body: any) => void
 ) => {
-  const string = await fileUploadToString(e)
-  const newSettings = validateSettings(JSON.parse(string))
+  const { data } = await fileUploadToString(e)
+  const newSettings = validateSettings(JSON.parse(data))
   const approved = confirm(
     'Confirm import settings? This will override all your existing settings.'
   )
@@ -46,19 +55,29 @@ export const importSettingsJson = async (
   alert('Settings successfully imported')
 }
 
-export const importSearchItemsCsv = async (
+export const importSearchItems = async (
   e: React.ChangeEvent<HTMLInputElement>
 ): Promise<SearchItem[]> => {
-  const string = await fileUploadToString(e)
-  const result = Papa.parse(string, {
-    header: true
-  })
-  if (!result?.data?.length || !_.isArray(result?.data)) {
+  const { data, type } = await fileUploadToString(e)
+
+  let result: any[] = []
+  if (type === 'application/json') {
+    result = JSON.parse(data)
+  } else if (type === 'text/csv') {
+    result = Papa.parse(data, {
+      header: true
+    })?.data
+  } else {
+    alert('Invalid file type')
+    return
+  }
+
+  if (!result?.length || !_.isArray(result)) {
     alert('No data to import')
     return
   }
   try {
-    const formattedResult: SearchItem[] = result.data.map((d) => {
+    const formattedResult: SearchItem[] = result.map((d) => {
       if (!_.isObjectLike(d)) {
         throw new Error('Parser error. Please double check your file.')
       }
@@ -78,11 +97,11 @@ export const importSearchItemsCsv = async (
   }
 }
 
-export const importMyListCsv = async (
+export const importMyList = async (
   e: React.ChangeEvent<HTMLInputElement>,
   updateMyList: (value: string) => void
 ) => {
-  const result = await importSearchItemsCsv(e)
+  const result = await importSearchItems(e)
   const approved = confirm(
     `Import ${result.length} list items? This will overwrite your current list.`
   )

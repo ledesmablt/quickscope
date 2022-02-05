@@ -4,7 +4,7 @@ import YamlEditor from '../components/YamlEditor'
 import FilterOptions from '../components/FilterOptions'
 import ExternalRequestsConfig from '../components/ExternalRequestsConfig'
 import { exportMyListCsv, exportSettingsJson } from 'src/utils/export'
-import { importMyListCsv, importSettingsJson } from 'src/utils/import'
+import { importMyList, importSettingsJson } from 'src/utils/import'
 import useStore from 'src/utils/hooks/useStore'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
@@ -65,7 +65,7 @@ const Settings = (): ReactElement => {
         value={myListText}
         onChange={setMyListText}
         onSave={setMyListTextCached}
-        onImport={(e) => importMyListCsv(e, setMyListTextCached)}
+        onImport={(e) => importMyList(e, setMyListTextCached)}
         onExport={exportMyListCsv}
       />
 
@@ -115,7 +115,7 @@ const Settings = (): ReactElement => {
           className='hidden'
           id='import-settings'
           type='file'
-          accept='application/JSON'
+          accept='application/json'
           onChange={(e) => importSettingsJson(e, useStore.setState)}
         />
         <button onClick={() => exportSettingsJson()}>export settings</button>

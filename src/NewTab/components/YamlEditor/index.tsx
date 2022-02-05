@@ -81,7 +81,7 @@ const YamlEditor = ({
             className='hidden'
             id={`csv-import-${id}`}
             type='file'
-            accept='text/csv'
+            accept='text/csv, application/json'
             onChange={onImport}
           />
         </button>

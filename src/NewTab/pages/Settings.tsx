@@ -55,7 +55,7 @@ const Settings = (): ReactElement => {
         <b>my list</b>
         <a
           className='ml-2'
-          href='https://ledesmablt.notion.site/quickscope-4bf6ef806e314db5b52d11c8afb0471c#a184b66196c94e8e899c5e4e24497187'
+          href='https://ledesmablt.notion.site/quickscope-4bf6ef806e314db5b52d11c8afb0471c#ee7844416dff41839a2c877656ce9505'
           target='_blank'
         >
           <FontAwesomeIcon icon={faQuestionCircle} />
@@ -74,7 +74,7 @@ const Settings = (): ReactElement => {
         <b>external requests</b>
         <a
           className='ml-2'
-          href='https://ledesmablt.notion.site/quickscope-4bf6ef806e314db5b52d11c8afb0471c#a184b66196c94e8e899c5e4e24497187'
+          href='https://ledesmablt.notion.site/quickscope-4bf6ef806e314db5b52d11c8afb0471c#https://www.notion.so/ledesmablt/quickscope-4bf6ef806e314db5b52d11c8afb0471c#aed4c2905cca440bb281c902e92247bf'
           target='_blank'
         >
           <FontAwesomeIcon icon={faQuestionCircle} />

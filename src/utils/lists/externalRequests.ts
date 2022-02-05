@@ -39,13 +39,7 @@ export const makeExternalRequests = async (
   return _.flatten(
     await Promise.all(
       externalConfigs.map(async (externalConfig) => {
-        try {
-          const data = await callExternal(externalConfig, searchText)
-          return data
-        } catch (err) {
-          console.error(err)
-          return []
-        }
+        return await callExternal(externalConfig, searchText)
       })
     )
   )

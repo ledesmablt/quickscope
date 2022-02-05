@@ -4,7 +4,10 @@ import getKeyAction from 'src/utils/getKeyAction'
 import SearchItemRow from '../SearchItemRow'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCircleNotch,
+  faExclamationCircle
+} from '@fortawesome/free-solid-svg-icons'
 import useSearch from 'src/utils/hooks/useSearch'
 import onLaunch from 'src/utils/onLaunch'
 
@@ -18,7 +21,7 @@ const Search = (): ReactElement => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [disableMouseEvent, setDisableMouseSelect] = useState(false)
 
-  const { data: results, loading, empty } = useSearch(searchText)
+  const { data: results, loading, error, empty } = useSearch(searchText)
   const selectedResult = results[selectedIndex]
 
   useEffect(() => {
@@ -122,13 +125,23 @@ const Search = (): ReactElement => {
     <>
       <div className='flex justify-between items-end pb-[6px] px-[2px] text-sm'>
         <p className='brand'>quickscope</p>
-        {searchText && loading && (
-          <FontAwesomeIcon
-            className='text-gray-400'
-            icon={faCircleNotch}
-            spin
-            size='sm'
-          />
+        {error ? (
+          <div className='flex flex-grow justify-end items-end text-red-600 has-tooltip'>
+            <span className='tooltip text-[12px] mr-4 p-0 leading-none'>
+              error! check console for details
+            </span>
+            <FontAwesomeIcon icon={faExclamationCircle} size='sm' />
+          </div>
+        ) : (
+          searchText &&
+          loading && (
+            <FontAwesomeIcon
+              className='text-gray-400'
+              icon={faCircleNotch}
+              spin
+              size='sm'
+            />
+          )
         )}
       </div>
       <div

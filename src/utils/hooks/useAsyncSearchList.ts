@@ -10,6 +10,7 @@ interface AsyncSearchListResult {
   numTriggers: number
   loading: boolean
   empty: boolean
+  error?: string
 }
 export default (searchText: string = ''): AsyncSearchListResult => {
   const [numTriggers, setNumTriggers] = useState(0)
@@ -33,6 +34,7 @@ export default (searchText: string = ''): AsyncSearchListResult => {
     data: staticList,
     loading: staticLoading,
     refetch: refetchStatic,
+    error: staticError,
     empty: staticEmpty
   } = useStaticList({
     callExternalOptions: groupedRequests.static
@@ -42,6 +44,7 @@ export default (searchText: string = ''): AsyncSearchListResult => {
     data: searchableList,
     loading: searchableLoading,
     refetch: refetchSearchable,
+    error: searchableError,
     empty: searchableEmpty
   } = useSearchableList({
     callExternalOptions: groupedRequests.searchable,
@@ -71,6 +74,7 @@ export default (searchText: string = ''): AsyncSearchListResult => {
     searchList: [...staticList, ...searchableList],
     loading: staticLoading || searchableLoading,
     numTriggers,
+    error: searchableError || staticError,
     empty: staticEmpty && searchableEmpty
   }
 }

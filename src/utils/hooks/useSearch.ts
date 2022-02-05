@@ -13,6 +13,7 @@ interface UseSearch {
   data: SearchItem[]
   loading: boolean
   empty: boolean
+  error?: string
 }
 export default (searchText: string): UseSearch => {
   const searchDebounce = useStore((store) => store.searchDebounce) || 150
@@ -25,7 +26,8 @@ export default (searchText: string): UseSearch => {
     searchList: asyncSearchList,
     loading,
     numTriggers: numAsyncTriggers,
-    empty
+    empty,
+    error
   } = useAsyncSearchList(searchInput.searchText)
 
   const searchList = useMemo(
@@ -61,6 +63,7 @@ export default (searchText: string): UseSearch => {
   return {
     data: results,
     loading,
-    empty
+    empty,
+    error
   }
 }

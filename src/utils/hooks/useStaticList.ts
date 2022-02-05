@@ -8,6 +8,7 @@ interface ReturnType {
   data: SearchItem[]
   loading: boolean
   refetch: VoidFunction
+  error?: string
   empty: boolean
 }
 interface Args {
@@ -19,6 +20,7 @@ export default ({ callExternalOptions, onCompleted }: Args): ReturnType => {
   const filterOptions = useStore((store) => store.includeLists)
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<SearchItem[]>([])
+  const [error, setError] = useState<string>()
 
   useEffect(() => {
     refetch()
@@ -28,11 +30,14 @@ export default ({ callExternalOptions, onCompleted }: Args): ReturnType => {
     if (!initialized) {
       return
     }
+    setError(null)
     setLoading(true)
     try {
       const result = await buildStaticList(callExternalOptions)
       setData(result)
       onCompleted && onCompleted(result)
+    } catch (err: any) {
+      setError(err.message)
     } finally {
       setLoading(false)
     }
@@ -42,6 +47,7 @@ export default ({ callExternalOptions, onCompleted }: Args): ReturnType => {
     data,
     loading,
     refetch,
+    error,
     empty:
       initialized && !loading && !data.length && !callExternalOptions?.length
   }

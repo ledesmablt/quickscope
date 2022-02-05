@@ -8,6 +8,7 @@ interface ReturnType {
   data: SearchItem[]
   loading: boolean
   refetch: VoidFunction
+  error?: string
   empty: boolean
 }
 interface Args {
@@ -23,6 +24,7 @@ export default ({
   const initialized = useStore((store) => store.initialized)
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<SearchItem[]>([])
+  const [error, setError] = useState<string>()
 
   useEffect(() => {
     if (searchText.trim()) {
@@ -40,6 +42,8 @@ export default ({
       const result = await buildSearchableList(callExternalOptions, searchText)
       setData(result)
       onCompleted && onCompleted(result, searchText)
+    } catch (err: any) {
+      setError(err.message)
     } finally {
       setLoading(false)
     }
@@ -49,6 +53,7 @@ export default ({
     data,
     loading,
     refetch,
+    error,
     empty: initialized && !loading && !callExternalOptions.length
   }
 }

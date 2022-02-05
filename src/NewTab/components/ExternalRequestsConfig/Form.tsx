@@ -1,5 +1,9 @@
 import _ from 'lodash'
 import React, { ReactElement, useEffect, useMemo, useState } from 'react'
+import {
+  axiosConfigPlaceholder,
+  transformMapPlaceholder
+} from 'src/NewTab/placeholders'
 import callExternal, { CallExternalOptions } from 'src/utils/callExternal'
 import Accordion from '../Accordion'
 
@@ -180,6 +184,7 @@ const Form = ({
         </label>
         <input
           id={`form-${id}-pathToData`}
+          placeholder='ex. data.results'
           type='text'
           spellCheck={false}
           autoComplete={'off'}
@@ -216,6 +221,7 @@ const Form = ({
           rows={6}
           className='code'
           spellCheck={false}
+          placeholder={axiosConfigPlaceholder}
           value={formValues.requestConfig}
           onChange={(e) => {
             setFormValues({
@@ -236,6 +242,7 @@ const Form = ({
           rows={6}
           className='code'
           spellCheck={false}
+          placeholder={transformMapPlaceholder}
           value={formValues.transformMap}
           onChange={(e) => {
             setFormValues({

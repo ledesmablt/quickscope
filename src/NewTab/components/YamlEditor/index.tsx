@@ -1,19 +1,7 @@
 import React, { ReactElement, useEffect, useMemo, useState } from 'react'
 import _ from 'lodash'
 import { parseYamlString } from 'src/utils/dataParser'
-
-const placeholderText = `# examples
-
-- url: http://example.com
-  title: title
-  description: description
-
-- url: http://another_example.com
-  label: mylabel
-  tags:
-    - tag 1
-    - tag 2
-`
+import { yamlEditorPlaceholder } from 'src/NewTab/placeholders'
 
 interface Props {
   value: string
@@ -64,7 +52,7 @@ const YamlEditor = ({
   return (
     <div className='w-full'>
       <textarea
-        placeholder={placeholderText}
+        placeholder={yamlEditorPlaceholder}
         spellCheck={false}
         value={value}
         onChange={(e) => {

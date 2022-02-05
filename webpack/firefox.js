@@ -1,4 +1,4 @@
-const { getCommonConfig, isManifest, packageJson } = require('./common')
+const { getCommonConfig, isManifest, setupManifest } = require('./common')
 const CopyPlugin = require('copy-webpack-plugin')
 const _ = require('lodash')
 
@@ -24,9 +24,7 @@ module.exports = {
           transform: (buffer, filePath) => {
             if (isManifest(filePath)) {
               let manifest = JSON.parse(buffer.toString())
-              manifest.name = packageJson.name
-              manifest.description = packageJson.description
-              manifest.version = packageJson.version
+              setupManifest(manifest)
 
               // firefox-specific
               manifest.manifest_version = 2

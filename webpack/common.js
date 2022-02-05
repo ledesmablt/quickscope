@@ -11,6 +11,12 @@ const packageJson = JSON.parse(
   fs.readFileSync(path.join(__dirname, '../package.json'))
 )
 
+const setupManifest = (manifest) => {
+  manifest.name = IS_PROD ? packageJson.name : `[dev] ${packageJson.name}`
+  manifest.description = packageJson.description
+  manifest.version = packageJson.version
+}
+
 const getCommonConfig = (browser) => ({
   devtool: !IS_PROD && 'inline-source-map',
   entry: {
@@ -64,5 +70,6 @@ const getCommonConfig = (browser) => ({
 module.exports = {
   getCommonConfig,
   isManifest,
+  setupManifest,
   packageJson
 }

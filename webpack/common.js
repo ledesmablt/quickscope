@@ -12,7 +12,7 @@ const packageJson = JSON.parse(
 )
 
 const getCommonConfig = (browser) => ({
-  devtool: 'inline-source-map',
+  devtool: !IS_PROD && 'inline-source-map',
   entry: {
     newTab: path.join(__dirname, '../src/NewTab/index.tsx'),
     backgroundScript: path.join(__dirname, '../src/backgroundScript.ts')

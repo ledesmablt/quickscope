@@ -2,14 +2,14 @@ import _ from 'lodash'
 import React, { ReactElement, useEffect, useMemo, useState } from 'react'
 import {
   axiosConfigPlaceholder,
-  transformMapPlaceholder
+  propertyMapPlaceholder
 } from 'src/NewTab/placeholders'
 import callExternal, { CallExternalOptions } from 'src/utils/callExternal'
 import Accordion from '../Accordion'
 
 interface FormValues {
   requestConfig: string
-  transformMap: string
+  propertyMap: string
   pathToData: string
   label: string
   enabled: boolean
@@ -23,7 +23,7 @@ export const newOptionDefault: FormValues = {
     "Authorization": "Bearer token"
   }
 }`,
-  transformMap: `{
+  propertyMap: `{
   "url": "path.to.url",
   "title": "path.to.title"
 }`,
@@ -51,7 +51,7 @@ export const formatAsOptions = (
   return {
     ...formValues,
     requestConfig: JSON.parse(formValues.requestConfig),
-    transformMap: JSON.parse(formValues.transformMap)
+    propertyMap: JSON.parse(formValues.propertyMap)
   }
 }
 
@@ -92,7 +92,7 @@ const Form = ({
 
   const errors: Partial<FormValues> = {
     name: !formValues.name && 'name is required',
-    transformMap: attemptJSONParse(formValues.transformMap),
+    propertyMap: attemptJSONParse(formValues.propertyMap),
     requestConfig: attemptJSONParse(formValues.requestConfig)
   }
 
@@ -234,24 +234,24 @@ const Form = ({
           <p className='error'>{errors.requestConfig}</p>
         )}
 
-        <label className='mt-1' htmlFor={`form-${id}-transformMap`}>
-          transform map
+        <label className='mt-1' htmlFor={`form-${id}-propertyMap`}>
+          property map
         </label>
         <textarea
-          id={`form-${id}-transformMap`}
+          id={`form-${id}-propertyMap`}
           rows={6}
           className='code'
           spellCheck={false}
-          placeholder={transformMapPlaceholder}
-          value={formValues.transformMap}
+          placeholder={propertyMapPlaceholder}
+          value={formValues.propertyMap}
           onChange={(e) => {
             setFormValues({
               ...formValues,
-              transformMap: e.target.value
+              propertyMap: e.target.value
             })
           }}
         />
-        {errors.transformMap && <p className='error'>{errors.transformMap}</p>}
+        {errors.propertyMap && <p className='error'>{errors.propertyMap}</p>}
 
         <div className='mt-2 flex flex-col items-start gap-1'>
           <p>

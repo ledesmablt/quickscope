@@ -18,7 +18,7 @@ export const axiosConfigPlaceholder = `{
   "url": "https://api.github.com/user/repos"
 }`
 
-export const transformMapPlaceholder = `{
+export const propertyMapPlaceholder = `{
   "title": "full_name",
   "url": "html_url"
 }`

@@ -5,7 +5,7 @@ import { LocalStorage } from './browser/storage'
 const externalRequestConfigSchema: yup.SchemaOf<CallExternalOptions> =
   yup.object({
     requestConfig: yup.object(),
-    transformMap: yup.object(),
+    propertyMap: yup.object(),
     includeLists: yup.array(yup.string()),
     pathToData: yup.string(),
     label: yup.string(),

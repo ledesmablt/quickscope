@@ -7,14 +7,14 @@ export const interpolateRegex = /\{\{\s*search_text\s*\}\}/g
 
 export interface CallExternalOptions {
   requestConfig?: AxiosRequestConfig
-  transformMap?: Record<string, string> //url: 'item.link'
+  propertyMap?: Record<string, string> //url: 'item.link'
   pathToData?: string // _.property
   label?: string
   enabled?: boolean
   name: string
 }
 export default async (
-  { requestConfig, transformMap, pathToData, label }: CallExternalOptions,
+  { requestConfig, propertyMap, pathToData, label }: CallExternalOptions,
   searchText?: string
 ): Promise<SearchItem[]> => {
   // make request
@@ -35,7 +35,7 @@ export default async (
   const validResult = arrayData.map((item) => {
     // build each item using transformMap
     const formattedItem: Partial<SearchItem> = {}
-    for (const [key, path] of Object.entries(transformMap)) {
+    for (const [key, path] of Object.entries(propertyMap)) {
       const getProperty = _.property(path)
       formattedItem[key] = getProperty(item)
     }

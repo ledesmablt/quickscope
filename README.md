@@ -3,7 +3,7 @@
 
 Quickscope is a simple but powerful search bar for your new tab.
 
-TODO: add gif & fix links
+TODO add links
 
 Get it for [Chrome]() or [Firefox]().
 
@@ -14,3 +14,7 @@ Read the full documentation [here](https://ledesmablt.notion.site/quickscope-4bf
 - **Fuzzy search** - you’ll be excused for making typos and still probably get what you’re looking for.
 - **Filtering** - you can use options such as `in="my label"`, `url:domain`, and others to sift through results.
 - **Custom API calls** - integrate with other data sources (ex. Notion, GitHub).
+
+## Demo
+
+![quickscope-demo](https://user-images.githubusercontent.com/22242264/152639247-f50bf847-26f8-490a-8d2e-5cae1e8ec66a.gif)

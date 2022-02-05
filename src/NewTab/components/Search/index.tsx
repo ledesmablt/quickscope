@@ -140,7 +140,7 @@ const Search = (): ReactElement => {
   return (
     <>
       <div className='flex justify-between items-end pb-[6px] px-[2px] text-sm'>
-        <p>quickscope</p>
+        <p className='brand'>quickscope</p>
         {searchText && loading && (
           <FontAwesomeIcon
             className='text-gray-400'
@@ -153,7 +153,7 @@ const Search = (): ReactElement => {
       <div
         ref={containerRef}
         tabIndex={0}
-        className='flex flex-col text-3xl grow max-h-[95%]'
+        className='flex flex-col text-2xl grow max-h-[95%]'
         onFocus={() => {
           inputRef?.current?.focus()
         }}

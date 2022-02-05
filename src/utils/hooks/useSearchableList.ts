@@ -12,7 +12,6 @@ interface ReturnType {
 }
 interface Args {
   searchText: string
-  debounce?: number
   callExternalOptions: CallExternalOptions[]
   onCompleted?: (data: SearchItem[], searchText: string) => void
 }

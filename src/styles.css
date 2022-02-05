@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.brand {
+  font-family: Outfit;
+}
+
 .full {
   @apply w-full h-full
 }

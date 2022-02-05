@@ -6,7 +6,8 @@ const _ = require('lodash')
 const commonConfig = getCommonConfig('firefox')
 const removeFromManifest = [
   'cross_origin_embedder_policy',
-  'cross_origin_opener_policy'
+  'cross_origin_opener_policy',
+  'host_permissions'
 ]
 const removeFromPermissions = ['tabGroups']
 const filterPermissions = (permissions) => {

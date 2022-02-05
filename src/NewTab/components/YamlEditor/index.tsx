@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect, useMemo, useState } from 'react'
 import _ from 'lodash'
 import { parseYamlString } from 'src/utils/dataParser'
 import { yamlEditorPlaceholder } from 'src/NewTab/placeholders'
+import CodeEditor from '../CodeEditor'
 
 interface Props {
   value: string
@@ -24,8 +25,6 @@ const YamlEditor = ({
   useEffect(() => {
     setSaved(false)
   }, [value])
-
-  const numLines = Math.min(Math.max(12, value.split('\n').length), 25)
 
   const { data: validatedList, error } = useMemo(() => {
     if (!value) {
@@ -51,15 +50,11 @@ const YamlEditor = ({
 
   return (
     <div className='w-full'>
-      <textarea
-        placeholder={yamlEditorPlaceholder}
-        spellCheck={false}
+      <CodeEditor
         value={value}
-        onChange={(e) => {
-          onChange(e.target.value)
-        }}
-        rows={numLines}
-        className='code mt-1'
+        placeholder={yamlEditorPlaceholder}
+        onChange={onChange}
+        language={'yaml'}
       />
       {!!errorMessage && <p className='error'>{errorMessage}</p>}
 

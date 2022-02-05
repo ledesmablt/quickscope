@@ -6,6 +6,7 @@ import {
 } from 'src/NewTab/placeholders'
 import callExternal, { CallExternalOptions } from 'src/utils/callExternal'
 import Accordion from '../Accordion'
+import CodeEditor from '../CodeEditor'
 
 interface FormValues {
   requestConfig: string
@@ -209,19 +210,17 @@ const Form = ({
         <div className='pt-2' />
 
         <label className='mt-1' htmlFor={`form-${id}-requestConfig`}>
-          axios request config
+          request config
         </label>
-        <textarea
+        <CodeEditor
           id={`form-${id}-requestConfig`}
-          rows={6}
-          className='code'
-          spellCheck={false}
+          language='json'
           placeholder={requestConfigPlaceholder}
           value={formValues.requestConfig}
           onChange={(e) => {
             setFormValues({
               ...formValues,
-              requestConfig: e.target.value
+              requestConfig: e
             })
           }}
         />
@@ -232,17 +231,15 @@ const Form = ({
         <label className='mt-1' htmlFor={`form-${id}-propertyMap`}>
           property map
         </label>
-        <textarea
+        <CodeEditor
           id={`form-${id}-propertyMap`}
-          rows={6}
-          className='code'
-          spellCheck={false}
+          language='json'
           placeholder={propertyMapPlaceholder}
           value={formValues.propertyMap}
           onChange={(e) => {
             setFormValues({
               ...formValues,
-              propertyMap: e.target.value
+              propertyMap: e
             })
           }}
         />

@@ -82,6 +82,7 @@ const Form = ({
   const [formValues, setFormValues] = useState<FormValues>(defaultValue)
   const [testStatus, setTestStatus] = useState<TestStatus>({})
   const [isSaved, setIsSaved] = useState(true)
+  const [isTouched, setIsTouched] = useState(false)
 
   const errors: Partial<FormValues> = {
     name: !formValues.name && 'name is required',
@@ -89,12 +90,16 @@ const Form = ({
     requestConfig: attemptJSONParse(formValues.requestConfig)
   }
 
-  useEffect(() => {
+  const onChange = (formValues: FormValues) => {
+    setIsTouched(true)
+    setFormValues(formValues)
+
+    // reset test when values change
     if (formValues?.enabled) {
       setTestStatus({})
       setIsSaved(false)
     }
-  }, [formValues, isNew])
+  }
 
   const onTest = async () => {
     setTestStatus({
@@ -120,6 +125,7 @@ const Form = ({
   const onSaveInner = () => {
     const options = formatAsOptions(formValues)
     onSave(options)
+    setIsTouched(false)
     setIsSaved(true)
   }
 
@@ -150,7 +156,7 @@ const Form = ({
           autoComplete={'off'}
           value={formValues.name}
           onChange={(e) => {
-            setFormValues({
+            onChange({
               ...formValues,
               name: e.target.value
             })
@@ -168,7 +174,7 @@ const Form = ({
           autoComplete={'off'}
           value={formValues.label}
           onChange={(e) => {
-            setFormValues({
+            onChange({
               ...formValues,
               label: e.target.value
             })
@@ -186,7 +192,7 @@ const Form = ({
           autoComplete={'off'}
           value={formValues.pathToData}
           onChange={(e) => {
-            setFormValues({
+            onChange({
               ...formValues,
               pathToData: e.target.value
             })
@@ -198,7 +204,7 @@ const Form = ({
             type='checkbox'
             checked={!!formValues.enabled}
             onChange={() => {
-              setFormValues({
+              onChange({
                 ...formValues,
                 enabled: !formValues.enabled
               })
@@ -218,7 +224,7 @@ const Form = ({
           placeholder={requestConfigPlaceholder}
           value={formValues.requestConfig}
           onChange={(e) => {
-            setFormValues({
+            onChange({
               ...formValues,
               requestConfig: e
             })
@@ -237,7 +243,7 @@ const Form = ({
           placeholder={propertyMapPlaceholder}
           value={formValues.propertyMap}
           onChange={(e) => {
-            setFormValues({
+            onChange({
               ...formValues,
               propertyMap: e
             })
@@ -263,7 +269,7 @@ const Form = ({
             <button onClick={onSaveInner} disabled={!saveable}>
               {isSaved ? 'saved!' : 'save'}
             </button>
-            {!testStatus?.ok && formValues?.enabled && (
+            {!saveable && (isTouched || isNew) && (
               <p>test must pass before saving</p>
             )}
           </div>

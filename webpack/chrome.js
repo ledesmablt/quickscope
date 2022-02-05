@@ -1,5 +1,6 @@
 const { getCommonConfig, isManifest, setupManifest } = require('./common')
 const CopyPlugin = require('copy-webpack-plugin')
+const { DefinePlugin } = require('webpack')
 
 const commonConfig = getCommonConfig('chrome')
 
@@ -7,6 +8,10 @@ module.exports = {
   ...commonConfig,
   plugins: [
     ...commonConfig.plugins,
+    new DefinePlugin({
+      'process.env.BROWSER': JSON.stringify('chrome'),
+      browser: 'chrome'
+    }),
     new CopyPlugin({
       patterns: [
         {

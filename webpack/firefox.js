@@ -1,5 +1,6 @@
 const { getCommonConfig, isManifest, setupManifest } = require('./common')
 const CopyPlugin = require('copy-webpack-plugin')
+const { DefinePlugin } = require('webpack')
 const _ = require('lodash')
 
 const commonConfig = getCommonConfig('firefox')
@@ -16,6 +17,10 @@ module.exports = {
   ...commonConfig,
   plugins: [
     ...commonConfig.plugins,
+    new DefinePlugin({
+      'process.env.BROWSER': JSON.stringify('firefox'),
+      browser: 'window.browser'
+    }),
     new CopyPlugin({
       patterns: [
         {

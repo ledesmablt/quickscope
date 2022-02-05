@@ -1,4 +1,3 @@
-import { browser } from 'src/constants'
 import { SearchItem } from 'src/types'
 import permissions from 'src/utils/browser/permissions'
 import storage from 'src/utils/browser/storage'

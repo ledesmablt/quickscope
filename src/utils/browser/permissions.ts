@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { browser } from 'src/constants'
 
 const getAll = async (): Promise<string[]> => {
   return new Promise((resolve) =>

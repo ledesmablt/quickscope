@@ -1,4 +1,3 @@
-import { browser } from 'src/constants'
 import { CallExternalOptions } from '../callExternal'
 
 export interface LocalStorage {

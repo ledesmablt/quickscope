@@ -8,5 +8,3 @@ export const FILTER_LIST_PERMISSION_MAP: Record<string, string[]> = {
 }
 
 export const FILTER_LIST_DEFAULT_CHECKED = ['my list']
-
-export let browser = BROWSER_ENV === 'chrome' ? chrome : window.browser

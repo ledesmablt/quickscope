@@ -1,4 +1,3 @@
-import { browser } from 'src/constants'
 import { SearchItem } from 'src/types'
 
 interface Options {

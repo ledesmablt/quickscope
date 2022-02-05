@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const { ProvidePlugin, DefinePlugin } = require('webpack')
+const { ProvidePlugin } = require('webpack')
 
 const IS_PROD = process.env.NODE_ENV === 'production'
 
@@ -60,9 +60,6 @@ const getCommonConfig = (browser) => ({
     new ProvidePlugin({
       process: 'process/browser',
       logger: 'logger'
-    }),
-    new DefinePlugin({
-      'process.env.BROWSER': JSON.stringify(browser)
     })
   ]
 })

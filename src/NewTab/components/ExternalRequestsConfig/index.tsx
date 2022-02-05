@@ -61,7 +61,12 @@ const ExternalRequestsConfig = (): ReactElement => {
           />
         )
       })}
-      <button onClick={onAdd}>add new</button>
+      <button
+        onClick={onAdd}
+        disabled={options?.length > cachedOptions?.length}
+      >
+        add new
+      </button>
     </div>
   )
 }

@@ -7,7 +7,7 @@ import { FILTER_LIST_DEFAULT_CHECKED } from 'src/constants'
 export const defaults: Required<LocalStorage> = {
   myList: '',
   externalRequestsConfig: [],
-  filterOptions_includeLists: FILTER_LIST_DEFAULT_CHECKED,
+  includeLists: FILTER_LIST_DEFAULT_CHECKED,
   searchDebounce: 150
 }
 

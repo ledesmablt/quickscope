@@ -4,9 +4,7 @@ import permissions from 'src/utils/browser/permissions'
 import storage from 'src/utils/browser/storage'
 
 export const getTabs = async () => {
-  const included = (await storage.get('filterOptions_includeLists'))?.includes(
-    'tabs'
-  )
+  const included = (await storage.get('includeLists'))?.includes('tabs')
   if (!included) {
     return []
   }

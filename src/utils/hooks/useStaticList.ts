@@ -16,7 +16,7 @@ interface Args {
 }
 export default ({ callExternalOptions, onCompleted }: Args): ReturnType => {
   const initialized = useStore((store) => store.initialized)
-  const filterOptions = useStore((store) => store.filterOptions_includeLists)
+  const filterOptions = useStore((store) => store.includeLists)
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<SearchItem[]>([])
 

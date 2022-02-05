@@ -6,9 +6,7 @@ import yaml from 'js-yaml'
 import _ from 'lodash'
 
 export const getMyList = async (): Promise<SearchItem[]> => {
-  const included = (await storage.get('filterOptions_includeLists'))?.includes(
-    'my list'
-  )
+  const included = (await storage.get('includeLists'))?.includes('my list')
   if (!included) {
     return []
   }

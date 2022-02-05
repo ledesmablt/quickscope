@@ -4,9 +4,7 @@ import permissions from 'src/utils/browser/permissions'
 import storage from 'src/utils/browser/storage'
 
 export const getBookmarks = async () => {
-  const included = (await storage.get('filterOptions_includeLists'))?.includes(
-    'bookmarks'
-  )
+  const included = (await storage.get('includeLists'))?.includes('bookmarks')
   if (!included) {
     return []
   }

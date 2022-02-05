@@ -14,9 +14,7 @@ interface AsyncSearchListResult {
 export default (searchText: string = ''): AsyncSearchListResult => {
   const [numTriggers, setNumTriggers] = useState(0)
 
-  const includeListsCached = useStore(
-    (store) => store.filterOptions_includeLists
-  )
+  const includeListsCached = useStore((store) => store.includeLists)
   const externalRequestsConfig = useStore(
     (store) => store.externalRequestsConfig
   )

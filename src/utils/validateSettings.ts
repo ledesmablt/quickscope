@@ -6,7 +6,7 @@ const externalRequestConfigSchema: yup.SchemaOf<CallExternalOptions> =
   yup.object({
     requestConfig: yup.object(),
     transformMap: yup.object(),
-    filterOptions_includeLists: yup.array(yup.string()),
+    includeLists: yup.array(yup.string()),
     pathToData: yup.string(),
     label: yup.string(),
     enabled: yup.boolean(),
@@ -17,7 +17,7 @@ export const schema: yup.SchemaOf<LocalStorage> = yup
   .object({
     myList: yup.string(),
     externalRequestsConfig: yup.array(externalRequestConfigSchema),
-    filterOptions_includeLists: yup.array(yup.string()),
+    includeLists: yup.array(yup.string()),
     searchDebounce: yup.number()
   })
   .typeError('url is required')

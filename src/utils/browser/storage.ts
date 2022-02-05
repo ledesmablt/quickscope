@@ -4,7 +4,7 @@ import { CallExternalOptions } from '../callExternal'
 export interface LocalStorage {
   myList?: string
   externalRequestsConfig?: CallExternalOptions[]
-  filterOptions_includeLists?: string[]
+  includeLists?: string[]
   searchDebounce?: number
 }
 

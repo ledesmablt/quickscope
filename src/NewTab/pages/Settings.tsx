@@ -6,6 +6,8 @@ import ExternalRequestsConfig from '../components/ExternalRequestsConfig'
 import { exportMyListCsv, exportSettingsJson } from 'src/utils/export'
 import { importMyListCsv, importSettingsJson } from 'src/utils/import'
 import useStore from 'src/utils/hooks/useStore'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 const Settings = (): ReactElement => {
   const myListTextCached = useStore((store) => store.myList) || ''
@@ -51,6 +53,13 @@ const Settings = (): ReactElement => {
       <div className='p-4' />
       <p>
         <b>my list</b>
+        <a
+          className='ml-2'
+          href='https://ledesmablt.notion.site/quickscope-4bf6ef806e314db5b52d11c8afb0471c#a184b66196c94e8e899c5e4e24497187'
+          target='_blank'
+        >
+          <FontAwesomeIcon icon={faQuestionCircle} />
+        </a>
       </p>
       <YamlEditor
         value={myListText}
@@ -63,6 +72,13 @@ const Settings = (): ReactElement => {
       <div className='p-4' />
       <p>
         <b>external requests</b>
+        <a
+          className='ml-2'
+          href='https://ledesmablt.notion.site/quickscope-4bf6ef806e314db5b52d11c8afb0471c#a184b66196c94e8e899c5e4e24497187'
+          target='_blank'
+        >
+          <FontAwesomeIcon icon={faQuestionCircle} />
+        </a>
       </p>
       <ExternalRequestsConfig />
 

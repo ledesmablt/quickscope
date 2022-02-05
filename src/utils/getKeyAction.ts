@@ -16,6 +16,12 @@ export default (e: React.KeyboardEvent): KeyAction => {
       return 'up'
     }
   }
+  if (e.key === 'Home') {
+    return 'top'
+  }
+  if (e.key === 'End') {
+    return 'bottom'
+  }
   if (ctrlPressed) {
     if (e.key === 'j') {
       if (e.shiftKey) {

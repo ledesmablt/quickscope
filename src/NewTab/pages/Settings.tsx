@@ -65,7 +65,11 @@ const Settings = (): ReactElement => {
         value={myListText}
         onChange={setMyListText}
         onSave={setMyListTextCached}
-        onImport={(e) => importMyList(e, setMyListTextCached)}
+        onImport={(e) =>
+          importMyList(e, (result) =>
+            setMyListTextCached(myListTextCached + '\n' + result)
+          )
+        }
         onExport={exportMyListCsv}
       />
 

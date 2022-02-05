@@ -103,7 +103,7 @@ export const importMyList = async (
 ) => {
   const result = await importSearchItems(e)
   const approved = confirm(
-    `Import ${result.length} list items? This will overwrite your current list.`
+    `Import ${result.length} list items? These will be added to your current list and will overwrite any unsaved changes.`
   )
   if (!approved) {
     return

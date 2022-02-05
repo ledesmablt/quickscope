@@ -1,3 +1,4 @@
+import { FILTER_LIST_OPTIONS } from 'src/constants'
 import { SearchItem } from 'src/types'
 import * as yup from 'yup'
 
@@ -20,7 +21,16 @@ export const schema: yup.SchemaOf<Omit<SearchItem, '__tabId' | '__windowId'>> =
             .typeError('tag item must be text')
         )
         .typeError('tags must be a bullet list'),
-      label: yup.string().typeError('label must be text'),
+      label: yup
+        .string()
+        .typeError('label must be text')
+        .test(
+          'not-reserved-label',
+          '"${originalValue}" cannot be used as a label',
+          (label) => {
+            return !FILTER_LIST_OPTIONS.includes(label)
+          }
+        ),
       title: yup.string().typeError('title must be text'),
       priority: yup.number().typeError('priority must be a number')
     })

@@ -25,7 +25,7 @@ const CodeEditor = ({
       <Suspense fallback={<p>loading...</p>}>
         <Editor
           id={id}
-          className='font-mono min-h-[12rem] max-h-[20rem] font-mono'
+          className='font-mono min-h-[12rem] max-h-[20rem]'
           placeholder={placeholder}
           value={value}
           onValueChange={onChange}

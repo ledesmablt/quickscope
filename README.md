@@ -1,7 +1,7 @@
 ![quickscope-logo-horizontal-small](https://user-images.githubusercontent.com/22242264/152638377-6c5b49b8-9d75-42c9-816a-9b9edc99c0bc.png)
 
 
-Quickscope is a simple but powerful search bar for your new tab.
+A simple but powerful search bar for your new tab.
 
 TODO add links
 

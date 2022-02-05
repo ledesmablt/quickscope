@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React, { ReactElement, useEffect, useMemo, useState } from 'react'
 import {
-  axiosConfigPlaceholder,
+  requestConfigPlaceholder,
   propertyMapPlaceholder
 } from 'src/NewTab/placeholders'
 import callExternal, { CallExternalOptions } from 'src/utils/callExternal'
@@ -17,16 +17,8 @@ interface FormValues {
 }
 
 export const newOptionDefault: FormValues = {
-  requestConfig: `{
-  "url": "https://api.example.com",
-  "headers": {
-    "Authorization": "Bearer token"
-  }
-}`,
-  propertyMap: `{
-  "url": "path.to.url",
-  "title": "path.to.title"
-}`,
+  requestConfig: requestConfigPlaceholder,
+  propertyMap: propertyMapPlaceholder,
   pathToData: '',
   label: '',
   name: 'New Request Config',
@@ -224,7 +216,7 @@ const Form = ({
           rows={6}
           className='code'
           spellCheck={false}
-          placeholder={axiosConfigPlaceholder}
+          placeholder={requestConfigPlaceholder}
           value={formValues.requestConfig}
           onChange={(e) => {
             setFormValues({

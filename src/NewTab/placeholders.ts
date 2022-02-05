@@ -11,7 +11,7 @@ export const yamlEditorPlaceholder = `# examples
     - tag 2
 `
 
-export const axiosConfigPlaceholder = `{
+export const requestConfigPlaceholder = `{
   "headers": {
     "Authorization": "Bearer $TOKEN"
   },
@@ -19,6 +19,6 @@ export const axiosConfigPlaceholder = `{
 }`
 
 export const propertyMapPlaceholder = `{
-  "title": "full_name",
-  "url": "html_url"
+  "url": "path.to.url",
+  "title": "path.to.title"
 }`

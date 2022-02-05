@@ -12,9 +12,12 @@ export const getTabs = async () => {
   if (!hasPermission) {
     return []
   }
-  const currentTab = await browser.tabs.getCurrent()
+  const [currentTab] = await browser.tabs.query({
+    active: true,
+    currentWindow: true
+  })
   const tabs = await browser.tabs.query({})
-  return tabs.filter((tab) => tab.id !== currentTab.id).map(formatTab)
+  return tabs.filter((tab) => tab.id !== currentTab?.id).map(formatTab)
 }
 
 export const formatTab = (tab: chrome.tabs.Tab): SearchItem => {

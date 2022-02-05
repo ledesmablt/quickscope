@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import useSearch from 'src/utils/hooks/useSearch'
 import { SearchItem } from 'src/types'
+import { browser } from 'src/constants'
 
 interface OnLaunchOptions {
   newTab?: boolean
@@ -17,10 +18,14 @@ const onLaunch = async (searchItem: SearchItem, options?: OnLaunchOptions) => {
     window.open(searchItem.url, '_blank')
   } else if (searchItem.__tabId) {
     // focus browser tab
-    const currentTab = await chrome.tabs.getCurrent()
-    chrome.tabs.update(searchItem.__tabId, { active: true })
-    chrome.windows.update(searchItem.__windowId, { focused: true })
-    chrome.tabs.remove(currentTab.id)
+    const [currentTab] = await browser.tabs.query({
+      active: true,
+      currentWindow: true
+    })
+    browser.tabs.update(searchItem.__tabId, { active: true })
+    // not available in firefox
+    browser.windows?.update(searchItem.__windowId, { focused: true })
+    currentTab && browser.tabs.remove(currentTab.id)
   } else {
     // open in same window
     window.open(searchItem.url, '_self')

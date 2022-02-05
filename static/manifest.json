@@ -9,7 +9,8 @@
   ],
   "optional_permissions": [
     "bookmarks",
-    "tabs"
+    "tabs",
+    "tabGroups"
   ],
   "chrome_url_overrides": {
     "newtab": "newtab.html"

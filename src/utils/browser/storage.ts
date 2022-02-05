@@ -1,5 +1,4 @@
-// in case supporting different browsers, can use this as an "API"
-
+import { browser } from 'src/constants'
 import { CallExternalOptions } from '../callExternal'
 
 export interface LocalStorage {
@@ -11,10 +10,10 @@ export interface LocalStorage {
 
 export default {
   set: async (body: Partial<LocalStorage>): Promise<void> => {
-    await chrome.storage.local.set(body)
+    await browser.storage.local.set(body)
   },
   get: async (key?: keyof LocalStorage): Promise<any> => {
-    const result = await chrome.storage.local.get(key)
+    const result = await browser.storage.local.get(key)
     if (!key) {
       return result
     }
@@ -23,9 +22,9 @@ export default {
   remove: async (
     key: keyof LocalStorage | (keyof LocalStorage)[]
   ): Promise<void> => {
-    await chrome.storage.local.remove(key)
+    await browser.storage.local.remove(key)
   },
   clear: async (): Promise<void> => {
-    await chrome.storage.local.clear()
+    await browser.storage.local.clear()
   }
 }

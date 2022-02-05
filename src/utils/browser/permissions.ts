@@ -1,8 +1,9 @@
 import _ from 'lodash'
+import { browser } from 'src/constants'
 
 const getAll = async (): Promise<string[]> => {
   return new Promise((resolve) =>
-    chrome.permissions.getAll(({ permissions }) => {
+    browser.permissions.getAll(({ permissions }) => {
       resolve(permissions)
     })
   )
@@ -15,16 +16,16 @@ const contains = async (permission: string | string[]): Promise<boolean> => {
   return common.length === permissions.length
 }
 
-const request = async (permission: string | string[]): Promise<boolean> => {
-  return new Promise((resolve) =>
-    chrome.permissions.request(
-      {
-        permissions: typeof permission === 'string' ? [permission] : permission
-      },
-      (granted) => {
-        resolve(granted)
-      }
-    )
+// must be synchronous to work in firefox
+const request = (
+  permission: string | string[],
+  callback: (granted: boolean) => void
+): void => {
+  browser.permissions.request(
+    {
+      permissions: typeof permission === 'string' ? [permission] : permission
+    },
+    callback
   )
 }
 

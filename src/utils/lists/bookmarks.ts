@@ -1,3 +1,4 @@
+import { browser } from 'src/constants'
 import { SearchItem } from 'src/types'
 import permissions from 'src/utils/browser/permissions'
 import storage from 'src/utils/browser/storage'
@@ -13,7 +14,7 @@ export const getBookmarks = async () => {
   if (!hasPermission) {
     return []
   }
-  const tree = await chrome.bookmarks.getTree()
+  const tree = (await browser.bookmarks.getTree()) || []
   const recurseTree = (
     tree: chrome.bookmarks.BookmarkTreeNode
   ): chrome.bookmarks.BookmarkTreeNode[] => {

@@ -1,3 +1,4 @@
+import { browser } from 'src/constants'
 import { SearchItem } from 'src/types'
 import permissions from 'src/utils/browser/permissions'
 import storage from 'src/utils/browser/storage'
@@ -13,8 +14,8 @@ export const getTabs = async () => {
   if (!hasPermission) {
     return []
   }
-  const currentTab = await chrome.tabs.getCurrent()
-  const tabs = await chrome.tabs.query({})
+  const currentTab = await browser.tabs.getCurrent()
+  const tabs = await browser.tabs.query({})
   return tabs.filter((tab) => tab.id !== currentTab.id).map(formatTab)
 }
 

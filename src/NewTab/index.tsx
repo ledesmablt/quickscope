@@ -35,7 +35,7 @@ const NewTab = (): ReactElement => {
 
   return (
     <MemoryRouter>
-      <div className='min-w-screen min-h-screen px-8 py-4 flex flex-col justify-center items-center text-gray-900'>
+      <div className='text-xs min-w-screen min-h-screen px-8 py-4 flex flex-col justify-center items-center text-gray-900'>
         <Nav />
         <div className='pt-8' />
         <div className='w-1/2 min-w-[24rem] max-w-[40rem] flex flex-col items-center grow'>

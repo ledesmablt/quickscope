@@ -16,12 +16,13 @@ interface Args {
 }
 export default ({ callExternalOptions, onCompleted }: Args): ReturnType => {
   const initialized = useStore((store) => store.initialized)
+  const filterOptions = useStore((store) => store.filterOptions_includeLists)
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<SearchItem[]>([])
 
   useEffect(() => {
     refetch()
-  }, [initialized, callExternalOptions])
+  }, [initialized, filterOptions, callExternalOptions])
 
   const refetch = async () => {
     if (!initialized) {

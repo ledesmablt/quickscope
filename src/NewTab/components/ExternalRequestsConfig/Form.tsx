@@ -97,9 +97,11 @@ const Form = ({
   }
 
   useEffect(() => {
-    setTestStatus({})
-    setIsSaved(false)
-  }, [formValues])
+    if (formValues?.enabled) {
+      setTestStatus({})
+      setIsSaved(false)
+    }
+  }, [formValues, isNew])
 
   const onTest = async () => {
     setTestStatus({
@@ -139,6 +141,7 @@ const Form = ({
   }
 
   const title = isNew ? `${formValues.name} (unsaved)` : formValues.name
+  const saveable = !isSaved && (formValues?.enabled ? testStatus?.ok : true)
 
   return (
     <Accordion
@@ -268,10 +271,12 @@ const Form = ({
             )}
           </div>
           <div className='flex gap-2 items-center'>
-            <button onClick={onSaveInner} disabled={!testStatus?.ok || isSaved}>
+            <button onClick={onSaveInner} disabled={!saveable}>
               {isSaved ? 'saved!' : 'save'}
             </button>
-            {!testStatus?.ok && <p>test must pass before saving</p>}
+            {!testStatus?.ok && formValues?.enabled && (
+              <p>test must pass before saving</p>
+            )}
           </div>
           <button onClick={onRemoveInner} disabled={testStatus?.loading}>
             {isNew ? 'cancel' : 'remove'}

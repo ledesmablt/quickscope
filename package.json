@@ -1,5 +1,6 @@
 {
   "name": "quickscope",
+  "description": "Quickscope is a simple but powerful search bar for your new tab.",
   "version": "0.0.1",
   "author": "Benj Ledesma <benj.ledesma@gmail.com>",
   "scripts": {

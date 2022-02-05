@@ -24,7 +24,11 @@ module.exports = {
           transform: (buffer, filePath) => {
             if (isManifest(filePath)) {
               let manifest = JSON.parse(buffer.toString())
+              manifest.name = packageJson.name
+              manifest.description = packageJson.description
               manifest.version = packageJson.version
+
+              // firefox-specific
               manifest.manifest_version = 2
               manifest = _.omit(manifest, removeFromManifest)
               manifest.permissions = filterPermissions(manifest.permissions)

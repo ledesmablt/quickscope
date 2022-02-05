@@ -15,6 +15,8 @@ module.exports = {
           transform: (buffer, filePath) => {
             if (isManifest(filePath)) {
               const manifest = JSON.parse(buffer.toString())
+              manifest.name = packageJson.name
+              manifest.description = packageJson.description
               manifest.version = packageJson.version
               return Buffer.from(JSON.stringify(manifest))
             } else {

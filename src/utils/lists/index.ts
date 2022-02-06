@@ -51,9 +51,7 @@ export interface FilterFlags {
 // for special keywords that aren't in the SearchItem Property
 const filterPropMap: Record<string, keyof SearchItem> = {
   in: 'label',
-  tag: 'tags',
-  'tag=': 'tags',
-  'tags=': 'tags'
+  tag: 'tags'
 }
 
 export const filterSearchList = (

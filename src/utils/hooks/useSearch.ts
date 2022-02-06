@@ -17,9 +17,10 @@ interface UseSearch {
 }
 export default (searchText: string): UseSearch => {
   const searchDebounce = useStore((store) => store.searchDebounce) || 150
-  const searchInput = useDebounce(
-    useMemo(() => searchParser(searchText), [searchText]),
-    searchDebounce
+  const debouncedSearchText = useDebounce(searchText, searchDebounce)
+  const searchInput = useMemo(
+    () => searchParser(debouncedSearchText),
+    [debouncedSearchText]
   )
 
   const {

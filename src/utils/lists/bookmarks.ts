@@ -2,6 +2,10 @@ import { SearchItem } from 'src/types'
 import permissions from 'src/utils/browser/permissions'
 import storage from 'src/utils/browser/storage'
 
+interface Bookmark extends chrome.bookmarks.BookmarkTreeNode {
+  tags?: string[]
+}
+
 export const getBookmarks = async () => {
   const included = (await storage.get('includeLists'))?.includes('bookmarks')
   if (!included) {
@@ -12,11 +16,18 @@ export const getBookmarks = async () => {
     return []
   }
   const tree = (await browser.bookmarks.getTree()) || []
-  const recurseTree = (
-    tree: chrome.bookmarks.BookmarkTreeNode
-  ): chrome.bookmarks.BookmarkTreeNode[] => {
+  const recurseTree = (tree: Bookmark): Bookmark[] => {
     if (tree.children) {
-      return tree.children.flatMap(recurseTree)
+      let tags = tree.tags || []
+      if (tree.title) {
+        tags = [...tags, tree.title]
+      }
+      return tree.children.flatMap((tree) => {
+        return recurseTree({
+          ...tree,
+          tags
+        })
+      })
     }
     return [tree]
   }
@@ -25,12 +36,11 @@ export const getBookmarks = async () => {
   return flatTree.filter((b) => b?.url).map(formatBookmark)
 }
 
-export const formatBookmark = (
-  bookmark: chrome.bookmarks.BookmarkTreeNode
-): SearchItem => {
+export const formatBookmark = (bookmark: Bookmark): SearchItem => {
   return {
     url: bookmark.url,
     title: bookmark.title,
-    label: 'bookmarks'
+    label: 'bookmarks',
+    tags: bookmark.tags?.length ? bookmark.tags : []
   }
 }

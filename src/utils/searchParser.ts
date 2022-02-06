@@ -76,7 +76,6 @@ export default (searchText: string = ''): SearchParserResult => {
       }
     }
     text = text.replace(allMatched, '')
-    console.log(value)
   }
   return {
     searchText: text.trim() || ' ',

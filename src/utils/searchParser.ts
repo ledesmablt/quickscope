@@ -5,11 +5,18 @@ interface SearchParserResult {
   flags: FilterFlags
 }
 
-const regex = /([^\s!:=]+)(!?)(:|=)((?:'|").*(?:'|")|[^\s]+)/g
-// first group: property name
-// second group: match operator
-// subsequent groups: property value
-// everything else: fuzzy search query
+const regex = /([^\s!:=]+)(!?)(:|=)(('|")(.*?[^\\]\5)|[^\s]+)/g
+/*
+ * groups:
+ * 1. property name (no spaces)
+ * 2. not operator (!)
+ * 3. match operator (: or =)
+ * 4. property value - wrapped in quotes or single word
+ * 5. single or double quotes
+ * 6. everything between single/double quote till next
+ *
+ * everything else not captured = fuzzy search query
+ * */
 
 const stringKeys: (keyof FilterFlags['string'])[] = [
   'url',

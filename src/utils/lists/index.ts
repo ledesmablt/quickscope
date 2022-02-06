@@ -32,6 +32,7 @@ export interface FieldMatchOptions {
   text: string
   matchType: 'includes' | 'equals'
   inverse?: boolean
+  parens?: boolean
 }
 
 export interface FilterFlags {
@@ -62,47 +63,57 @@ export const filterSearchList = (
   if (Object.keys(filterFlags.string).length) {
     searchList = searchList.filter((searchItem) => {
       // searchItem url must contain stringContains.url, and so on
-      return Object.entries(filterFlags.string).every(([key, value]) => {
-        const { text, matchType, inverse } = value
-        const itemKey = filterPropMap[key] || key
-        const itemValue: string = searchItem[itemKey]
-        if (!itemValue) {
+      return Object.entries(filterFlags.string).every(([key, filterFlag]) => {
+        const { text, matchType, inverse, parens } = filterFlag
+        const property = filterPropMap[key] || key
+        const searchItemValue: string = searchItem[property]?.toLowerCase()
+        if (!searchItemValue) {
           return false
         }
-        let result: boolean
-        if (matchType === 'equals') {
-          result = itemValue.toLowerCase() === text.toLowerCase()
-        } else if (matchType === 'includes') {
-          result = itemValue.toLowerCase().search(text.toLowerCase()) >= 0
-        } else {
-          throw new Error('invalid match type')
-        }
+
+        // if wrapped in parens, split by "or" operator (|)
+        const filterTokens = (!parens ? [text] : text.split('|')).map((t) =>
+          t.trim().toLowerCase()
+        )
+        const result = filterTokens.some((text) => {
+          if (matchType === 'equals') {
+            return searchItemValue === text
+          } else if (matchType === 'includes') {
+            return searchItemValue.indexOf(text) >= 0
+          } else {
+            throw new Error('invalid match type')
+          }
+        })
         return inverse ? !result : result
       })
     })
   }
   if (Object.keys(filterFlags.array).length) {
     searchList = searchList.filter((searchItem) => {
-      return Object.entries(filterFlags.array).every(([key, value]) => {
-        const { text, matchType, inverse } = value
-        const itemKey = filterPropMap[key] || key
-        const itemValue: string[] = searchItem[itemKey]
-        if (!_.isArray(itemValue) || !itemValue?.length) {
+      return Object.entries(filterFlags.array).every(([key, filterFlag]) => {
+        const { text, matchType, inverse, parens } = filterFlag
+        const property = filterPropMap[key] || key
+        const searchItemValue: string[] = searchItem[property]?.map(
+          (s: string) => s.toLowerCase()
+        )
+        if (!_.isArray(searchItemValue) || !searchItemValue?.length) {
           // no tags
           return inverse
         }
-        let result: boolean
-        if (matchType === 'equals') {
-          result = !!itemValue.find(
-            (v) => v.toLowerCase() === text.toLowerCase()
-          )
-        } else if (matchType === 'includes') {
-          result = !!itemValue.find(
-            (v) => v.toLowerCase().search(text.toLowerCase()) >= 0
-          )
-        } else {
-          throw new Error('invalid match type')
-        }
+
+        // if wrapped in parens, split by "or" operator (|)
+        const filterTokens = (!parens ? [text] : text.split('|')).map((t) =>
+          t.trim().toLowerCase()
+        )
+        const result = filterTokens.some((text) => {
+          if (matchType === 'equals') {
+            return !!searchItemValue.find((v) => v === text)
+          } else if (matchType === 'includes') {
+            return !!searchItemValue.find((v) => v.indexOf(text) >= 0)
+          } else {
+            throw new Error('invalid match type')
+          }
+        })
         return inverse ? !result : result
       })
     })

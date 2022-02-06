@@ -49,25 +49,34 @@ export default (searchText: string = ''): SearchParserResult => {
     }
 
     for (const q of ['"', "'"]) {
-      // trim quotation marks (regex doesn't capture it in a group)
+      // trim quotation marks
       if (value.startsWith(q) && value.endsWith(q)) {
         value = value.slice(1, value.length - 1)
       }
     }
+    let parens = false
+    if (value.startsWith('(') && value.endsWith(')')) {
+      value = value.slice(1, value.length - 1)
+      parens = true
+    }
+
     if (stringKeys.includes(key)) {
       flags.string[key] = {
         text: value,
         matchType,
-        inverse: !!notOperator
+        inverse: !!notOperator,
+        parens
       }
     } else if (arrayKeys.includes(key)) {
       flags.array[key] = {
         text: value,
         matchType,
-        inverse: !!notOperator
+        inverse: !!notOperator,
+        parens
       }
     }
     text = text.replace(allMatched, '')
+    console.log(value)
   }
   return {
     searchText: text.trim() || ' ',

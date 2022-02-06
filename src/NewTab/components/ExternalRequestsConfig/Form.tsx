@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import React, { ReactElement, useEffect, useMemo, useState } from 'react'
+import React, { ReactElement, useMemo, useState } from 'react'
 import {
   requestConfigPlaceholder,
   propertyMapPlaceholder
@@ -221,7 +221,7 @@ const Form = ({
         <CodeEditor
           id={`form-${id}-requestConfig`}
           language='json'
-          placeholder={requestConfigPlaceholder}
+          placeholder={'// enter axios request config (JSON)'}
           value={formValues.requestConfig}
           onChange={(e) => {
             onChange({
@@ -240,7 +240,7 @@ const Form = ({
         <CodeEditor
           id={`form-${id}-propertyMap`}
           language='json'
-          placeholder={propertyMapPlaceholder}
+          placeholder={'// enter property map (JSON)'}
           value={formValues.propertyMap}
           onChange={(e) => {
             onChange({

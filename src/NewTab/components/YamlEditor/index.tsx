@@ -1,7 +1,6 @@
 import React, { ReactElement, useEffect, useMemo, useState } from 'react'
 import _ from 'lodash'
 import { parseYamlString } from 'src/utils/dataParser'
-import { yamlEditorPlaceholder } from 'src/NewTab/placeholders'
 import CodeEditor from '../CodeEditor'
 
 interface Props {
@@ -52,7 +51,7 @@ const YamlEditor = ({
     <div className='w-full'>
       <CodeEditor
         value={value}
-        placeholder={yamlEditorPlaceholder}
+        placeholder={'# enter search items'}
         onChange={onChange}
         language={'yaml'}
       />

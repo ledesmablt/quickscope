@@ -26,14 +26,14 @@ const CodeEditor = ({
   const isDarkMode = useStore((store) => store.isDarkMode)
 
   return (
-    <div className='border rounded overflow-auto w-full my-1'>
+    <div className='border rounded overflow-auto w-full my-1 min-h-[12rem] max-h-[20rem] hljs dark:bg-zinc-800'>
       <Suspense
         fallback={<div className='min-h-[12rem] max-h-[20rem]'>loading...</div>}
       >
         {isDarkMode ? <DarkTheme /> : <LightTheme />}
         <Editor
           id={id}
-          className='font-mono min-h-[12rem] max-h-[20rem]'
+          className='font-mono '
           placeholder={placeholder}
           value={value}
           onValueChange={onChange}

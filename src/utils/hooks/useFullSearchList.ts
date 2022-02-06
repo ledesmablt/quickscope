@@ -5,14 +5,14 @@ import useSearchableList from './useSearchableList'
 import useStaticList from './useStaticList'
 import useStore from './useStore'
 
-interface AsyncSearchListResult {
+interface FullSearchListResult {
   searchList: SearchItem[]
   numTriggers: number
   loading: boolean
   empty: boolean
   error?: string
 }
-export default (searchText: string = ''): AsyncSearchListResult => {
+export default (searchText: string = ''): FullSearchListResult => {
   const [numTriggers, setNumTriggers] = useState(0)
 
   const includeListsCached = useStore((store) => store.includeLists)

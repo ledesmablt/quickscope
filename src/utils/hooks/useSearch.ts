@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { SearchItem } from 'src/types'
 import { filterSearchList } from '../lists'
 import searchParser from '../searchParser'
-import useAsyncSearchList from './useAsyncSearchList'
+import useFullSearchList from './useFullSearchList'
 import useDebounce from './useDebounce'
 import useStore from './useStore'
 
@@ -23,20 +23,16 @@ export default (searchText: string): UseSearch => {
     [debouncedSearchText]
   )
 
-  const {
-    searchList: asyncSearchList,
-    loading,
-    numTriggers: numAsyncTriggers,
-    empty,
-    error
-  } = useAsyncSearchList(searchInput.searchText)
+  const { searchList, loading, numTriggers, empty, error } = useFullSearchList(
+    searchInput.searchText
+  )
 
-  const searchList = useMemo(
-    () => filterSearchList(asyncSearchList, searchInput.flags),
-    [numAsyncTriggers, searchInput.flags.string, searchInput.flags.array]
+  const filteredSearchList = useMemo(
+    () => filterSearchList(searchList, searchInput.flags),
+    [numTriggers, searchInput.flags.string, searchInput.flags.array]
   )
   const fzf = useMemo(() => {
-    return new Fzf(searchList, {
+    return new Fzf(filteredSearchList, {
       selector: (v) => {
         return [
           v.title,
@@ -51,7 +47,7 @@ export default (searchText: string): UseSearch => {
       match: extendedMatch,
       limit: LIMIT
     })
-  }, [searchList])
+  }, [filteredSearchList])
 
   const results = useMemo(() => {
     const resultList =

@@ -5,15 +5,15 @@ interface SearchParserResult {
   flags: FilterFlags
 }
 
-const regex = /([^\s!:=]+)(!?)(:|=)(('|")(.*?[^\\]\5)|[^\s]+)/g
+const regex = /([^\s!:=]+)(!?)(:|=)(('|")(.*?[^\\]\5)|\((?:.*?)\)|[^\s]+)/g
 /*
  * groups:
  * 1. property name (no spaces)
  * 2. not operator (!)
  * 3. match operator (: or =)
- * 4. property value - wrapped in quotes or single word
+ * 4. property value - wrapped in quotes, parens, or single word
  * 5. single or double quotes
- * 6. everything between single/double quote till next
+ * 6. everything between single/double quote till next quote
  *
  * everything else not captured = fuzzy search query
  * */

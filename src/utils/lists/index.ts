@@ -75,11 +75,11 @@ export const filterSearchList = (
         const filterTokens = (!parens ? [text] : text.split('|')).map((t) =>
           t.trim().toLowerCase()
         )
-        const result = filterTokens.some((text) => {
+        const result = filterTokens.some((token) => {
           if (matchType === 'equals') {
-            return searchItemValue === text
+            return searchItemValue === token
           } else if (matchType === 'includes') {
-            return searchItemValue.indexOf(text) >= 0
+            return searchItemValue.indexOf(token) >= 0
           } else {
             throw new Error('invalid match type')
           }
@@ -105,14 +105,18 @@ export const filterSearchList = (
         const filterTokens = (!parens ? [text] : text.split('|')).map((t) =>
           t.trim().toLowerCase()
         )
-        const result = filterTokens.some((text) => {
-          if (matchType === 'equals') {
-            return !!searchItemValue.find((v) => v === text)
-          } else if (matchType === 'includes') {
-            return !!searchItemValue.find((v) => v.indexOf(text) >= 0)
-          } else {
-            throw new Error('invalid match type')
-          }
+        const result = filterTokens.some((token) => {
+          // "and" operator
+          const textList = token.split(',').map((t) => t.trim())
+          return textList.every((t) => {
+            if (matchType === 'equals') {
+              return !!searchItemValue.find((v) => v === t)
+            } else if (matchType === 'includes') {
+              return !!searchItemValue.find((v) => v.indexOf(t) >= 0)
+            } else {
+              throw new Error('invalid match type')
+            }
+          })
         })
         return inverse ? !result : result
       })

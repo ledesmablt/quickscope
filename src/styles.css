@@ -19,7 +19,7 @@
 }
 
 textarea:focus {
-  outline: none
+  @apply outline-none dark:outline dark:caret-white
 }
 
 input {
@@ -27,11 +27,11 @@ input {
 }
 
 p.error {
-  @apply text-red-600
+  @apply text-red-600 dark:text-red-400
 }
 
 p.success {
-  @apply text-green-600
+  @apply text-green-600 dark:text-green-300
 }
 
 button {
@@ -41,3 +41,20 @@ button {
 button:disabled {
   @apply bg-gray-100 text-gray-400
 }
+
+body, a:not(.search-item-row), p, input, label, button {
+  @apply dark:bg-zinc-800 dark:text-white
+}
+
+a.unselected-search-item-row {
+  @apply dark:text-zinc-400
+}
+
+button:disabled {
+  @apply dark:bg-zinc-800 dark:text-zinc-400
+}
+
+button:hover:enabled, button:hover:enabled > * {
+  @apply dark:bg-zinc-700
+}
+

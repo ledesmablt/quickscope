@@ -42,6 +42,7 @@ const Settings = (): ReactElement => {
   }, [searchDebounceCached])
   const searchDebounceError =
     !searchDebounceText || !(parseFloat(searchDebounceText) > 0)
+  const isDarkMode = useStore((store) => store.isDarkMode)
 
   return (
     <div className='full'>
@@ -91,6 +92,18 @@ const Settings = (): ReactElement => {
         <b>other settings</b>
       </p>
 
+      <div className='flex items-center'>
+        <input
+          id={'dark-mode-toggle'}
+          type='checkbox'
+          checked={isDarkMode}
+          onChange={async () => {
+            useStore.setState({ isDarkMode: !isDarkMode })
+          }}
+          className='mr-2'
+        />
+        <label htmlFor={'dark-mode-toggle'}>dark mode</label>
+      </div>
       <div className='flex flex-col pt-2'>
         <label htmlFor='search-debounce'>search debounce (ms)</label>
         <input

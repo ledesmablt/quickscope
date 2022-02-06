@@ -18,7 +18,8 @@ export const schema: yup.SchemaOf<LocalStorage> = yup
     myList: yup.string(),
     externalRequestsConfig: yup.array(externalRequestConfigSchema),
     includeLists: yup.array(yup.string()),
-    searchDebounce: yup.number()
+    searchDebounce: yup.number(),
+    isDarkMode: yup.boolean()
   })
   .typeError('url is required')
 

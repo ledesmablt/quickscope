@@ -8,7 +8,8 @@ export const defaults: Required<LocalStorage> = {
   myList: '',
   externalRequestsConfig: [],
   includeLists: FILTER_LIST_DEFAULT_CHECKED,
-  searchDebounce: 150
+  searchDebounce: 150,
+  isDarkMode: false
 }
 
 export interface Store extends LocalStorage {

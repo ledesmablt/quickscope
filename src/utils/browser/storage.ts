@@ -5,6 +5,7 @@ export interface LocalStorage {
   externalRequestsConfig?: CallExternalOptions[]
   includeLists?: string[]
   searchDebounce?: number
+  isDarkMode?: boolean
 }
 
 export default {

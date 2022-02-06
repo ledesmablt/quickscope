@@ -33,6 +33,19 @@ const NewTab = (): ReactElement => {
     }
   }, [])
 
+  useEffect(() => {
+    if (!store.initialized) {
+      return
+    }
+    const query = document.getElementsByTagName('html')
+    const html: HTMLHtmlElement = query?.[0]
+    if (store.isDarkMode) {
+      html.setAttribute('class', 'dark')
+    } else {
+      html.removeAttribute('class')
+    }
+  }, [store.initialized, store.isDarkMode])
+
   return (
     <MemoryRouter>
       <div className='text-xs min-w-screen min-h-screen px-8 py-4 flex flex-col justify-center items-center text-gray-900'>

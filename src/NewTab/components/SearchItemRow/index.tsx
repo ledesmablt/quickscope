@@ -3,8 +3,9 @@ import { SearchItem } from 'src/types'
 
 interface Props {
   searchItem: SearchItem
+  isSelected?: boolean
 }
-const SearchItemRow = ({ searchItem }: Props): ReactElement => {
+const SearchItemRow = ({ searchItem, isSelected }: Props): ReactElement => {
   const infoText = useMemo(() => {
     if (searchItem.description) {
       return searchItem.description
@@ -19,7 +20,10 @@ const SearchItemRow = ({ searchItem }: Props): ReactElement => {
   }, [searchItem.url, searchItem.description])
 
   return (
-    <a href={searchItem.url}>
+    <a
+      href={searchItem.url}
+      className={!isSelected ? 'unselected-search-item-row' : ''}
+    >
       <div className='inline-block w-full flex justify-between items-end'>
         <span className='truncate w-[calc(100%-6rem)]'>
           {searchItem.title || searchItem.url}

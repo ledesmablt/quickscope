@@ -156,7 +156,7 @@ const Search = (): ReactElement => {
         <input
           ref={inputRef}
           type='text'
-          className='border rounded-t p-2 w-md'
+          className='border rounded-t p-2 w-md dark:focus:outline-none'
           placeholder='Search'
           spellCheck={false}
           autoComplete={'off'}
@@ -168,7 +168,7 @@ const Search = (): ReactElement => {
         {!!results.length && (
           <div
             ref={resultsContainerRef}
-            className='flex flex-col grow border text-gray-400 gap-1 overflow-y-auto'
+            className='flex flex-col grow border text-gray-400 dark:text-gray-200 gap-1 overflow-y-auto'
             onMouseMove={() => {
               setDisableMouseSelect(false)
             }}
@@ -180,7 +180,9 @@ const Search = (): ReactElement => {
                   ref={index === selectedIndex ? selectedRef : null}
                   key={index}
                   className={`cursor-pointer px-2 py-1 ${
-                    isSelected ? 'bg-gray-100 text-gray-600' : ''
+                    isSelected
+                      ? 'bg-gray-100 dark:bg-zinc-600 text-gray-600 dark:text-white'
+                      : ''
                   }`}
                   onMouseEnter={() => {
                     if (disableMouseEvent) {
@@ -190,7 +192,7 @@ const Search = (): ReactElement => {
                     inputRef?.current?.focus()
                   }}
                 >
-                  <SearchItemRow searchItem={result} />
+                  <SearchItemRow searchItem={result} isSelected={isSelected} />
                 </div>
               )
             })}

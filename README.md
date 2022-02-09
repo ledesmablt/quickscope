@@ -3,8 +3,6 @@
 
 A simple but powerful search bar for your new tab.
 
-TODO add links
-
 Get it for [Chrome](https://chrome.google.com/webstore/detail/quickscope/oabedmmfkalfcjpihkodnbggajagkocj) or [Firefox](https://addons.mozilla.org/en-US/firefox/addon/quickscope).
 
 Read the full documentation [here](https://ledesmablt.notion.site/quickscope-4bf6ef806e314db5b52d11c8afb0471c).

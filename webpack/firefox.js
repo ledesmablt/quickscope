@@ -35,7 +35,10 @@ module.exports = {
               // firefox-specific
               manifest.manifest_version = 2
               manifest = _.omit(manifest, removeFromManifest)
-              manifest.permissions = filterPermissions(manifest.permissions)
+              manifest.permissions = [
+                ...filterPermissions(manifest.permissions),
+                '*://*/*'
+              ]
               manifest.optional_permissions = filterPermissions(
                 manifest.optional_permissions
               )
